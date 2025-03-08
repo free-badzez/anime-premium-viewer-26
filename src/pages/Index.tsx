@@ -1,11 +1,49 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React from 'react';
+import { usePopularAnime, useTopRatedAnime, useTrendingAnime } from '@/hooks/useAnime';
+import HeroSection from '@/components/HeroSection';
+import AnimeGrid from '@/components/AnimeGrid';
+import Navbar from '@/components/Navbar';
 
 const Index = () => {
+  const { data: trendingData, isLoading: trendingLoading, error: trendingError } = useTrendingAnime();
+  const { data: popularData, isLoading: popularLoading, error: popularError } = usePopularAnime();
+  const { data: topRatedData, isLoading: topRatedLoading, error: topRatedError } = useTopRatedAnime();
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen pb-10">
+      <Navbar />
+      
+      {/* Hero Section */}
+      <section className="w-full">
+        <HeroSection animes={trendingData?.results?.slice(0, 5) || []} />
+      </section>
+      
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 md:px-10">
+        {/* Trending Anime */}
+        <AnimeGrid
+          title="Trending Now"
+          animes={trendingData?.results || []}
+          isLoading={trendingLoading}
+          error={trendingError as Error}
+        />
+        
+        {/* Popular Anime */}
+        <AnimeGrid
+          title="Popular Anime"
+          animes={popularData?.results || []}
+          isLoading={popularLoading}
+          error={popularError as Error}
+        />
+        
+        {/* Top Rated Anime */}
+        <AnimeGrid
+          title="Top Rated"
+          animes={topRatedData?.results || []}
+          isLoading={topRatedLoading}
+          error={topRatedError as Error}
+        />
       </div>
     </div>
   );
