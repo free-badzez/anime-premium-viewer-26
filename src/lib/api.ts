@@ -78,7 +78,7 @@ export const getPopularAnime = async (page: number = 1) => {
   // Объединяем и сортируем результаты по популярности
   const combinedResults = [...tvResponse.results, ...movieResponse.results]
     .sort((a, b) => b.popularity - a.popularity)
-    .slice(0, 20); // Ограничиваем до 20 результатов
+    .slice(0, 24); // Увеличиваем до 24 результатов
   
   return {
     ...tvResponse,
@@ -109,7 +109,51 @@ export const getTopRatedAnime = async (page: number = 1) => {
   // Объединяем и сортируем результаты по рейтингу
   const combinedResults = [...tvResponse.results, ...movieResponse.results]
     .sort((a, b) => b.vote_average - a.vote_average)
-    .slice(0, 20); // Ограничиваем до 20 результатов
+    .slice(0, 24); // Увеличиваем до 24 результатов
+  
+  return {
+    ...tvResponse,
+    results: combinedResults
+  };
+};
+
+// Get recent anime (новая функция)
+export const getRecentAnime = async (page: number = 1) => {
+  const currentDate = new Date();
+  const threeYearsAgo = new Date();
+  threeYearsAgo.setFullYear(currentDate.getFullYear() - 3);
+  
+  const formattedCurrentDate = currentDate.toISOString().split('T')[0];
+  const formattedThreeYearsAgo = threeYearsAgo.toISOString().split('T')[0];
+  
+  // Получаем недавние аниме-сериалы
+  const tvResponse = await fetchFromTMDB<TMDBResponse<Anime>>('/discover/tv', {
+    page: page.toString(),
+    'air_date.gte': formattedThreeYearsAgo,
+    'air_date.lte': formattedCurrentDate,
+    sort_by: 'first_air_date.desc',
+    with_genres: ANIME_TYPE_ID.toString(),
+    with_original_language: 'ja',
+  });
+  
+  // Получаем недавние аниме-фильмы
+  const movieResponse = await fetchFromTMDB<TMDBResponse<Anime>>('/discover/movie', {
+    page: page.toString(),
+    'release_date.gte': formattedThreeYearsAgo,
+    'release_date.lte': formattedCurrentDate,
+    sort_by: 'release_date.desc',
+    with_genres: ANIME_TYPE_ID.toString(),
+    with_original_language: 'ja',
+  });
+  
+  // Объединяем и сортируем результаты по дате
+  const combinedResults = [...tvResponse.results, ...movieResponse.results]
+    .sort((a, b) => {
+      const dateA = new Date(a.first_air_date || a.release_date || '');
+      const dateB = new Date(b.first_air_date || b.release_date || '');
+      return dateB.getTime() - dateA.getTime();
+    })
+    .slice(0, 24); // Показываем 24 результата
   
   return {
     ...tvResponse,

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { usePopularAnime, useTopRatedAnime, useTrendingAnime } from '@/hooks/useAnime';
+import { usePopularAnime, useTopRatedAnime, useTrendingAnime, useRecentAnime } from '@/hooks/useAnime';
 import HeroSection from '@/components/HeroSection';
 import AnimeGrid from '@/components/AnimeGrid';
 import Navbar from '@/components/Navbar';
@@ -9,6 +9,7 @@ const Index = () => {
   const { data: trendingData, isLoading: trendingLoading, error: trendingError } = useTrendingAnime();
   const { data: popularData, isLoading: popularLoading, error: popularError } = usePopularAnime();
   const { data: topRatedData, isLoading: topRatedLoading, error: topRatedError } = useTopRatedAnime();
+  const { data: recentData, isLoading: recentLoading, error: recentError } = useRecentAnime();
 
   return (
     <div className="min-h-screen pb-10">
@@ -21,6 +22,14 @@ const Index = () => {
       
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-10">
+        {/* Современные аниме (добавлена новая секция) */}
+        <AnimeGrid
+          title="Современные аниме"
+          animes={recentData?.results || []}
+          isLoading={recentLoading}
+          error={recentError as Error}
+        />
+
         {/* Trending Anime */}
         <AnimeGrid
           title="В тренде"

@@ -5,7 +5,8 @@ import {
   getPopularAnime,
   getTopRatedAnime,
   getAnimeDetails,
-  searchAnime
+  searchAnime,
+  getRecentAnime
 } from "@/lib/api";
 
 export const useTrendingAnime = (timeWindow: 'day' | 'week' = 'week', page: number = 1) => {
@@ -26,6 +27,13 @@ export const useTopRatedAnime = (page: number = 1) => {
   return useQuery({
     queryKey: ['top-rated-anime', page],
     queryFn: () => getTopRatedAnime(page),
+  });
+};
+
+export const useRecentAnime = (page: number = 1) => {
+  return useQuery({
+    queryKey: ['recent-anime', page],
+    queryFn: () => getRecentAnime(page),
   });
 };
 
