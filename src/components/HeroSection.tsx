@@ -39,9 +39,10 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
   
   if (!currentAnime) return null;
   
-  const releaseYear = currentAnime.first_air_date 
-    ? new Date(currentAnime.first_air_date).getFullYear() 
-    : null;
+  const title = currentAnime.name || currentAnime.title || '';
+  const releaseDate = currentAnime.first_air_date || currentAnime.release_date;
+  const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : null;
+  const mediaType = currentAnime.media_type || 'tv';
   
   return (
     <div className="relative w-full overflow-hidden h-[60vh] sm:h-[70vh] md:h-[80vh]">
@@ -49,7 +50,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
       <div className="absolute inset-0 bg-gray-100">
         <img
           src={getImageUrl(currentAnime.backdrop_path, 'original')}
-          alt={currentAnime.name}
+          alt={title}
           onLoad={() => setImageLoaded(true)}
           className={cn(
             "w-full h-full object-cover object-top transition-opacity duration-500",
@@ -71,7 +72,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
         >
           <div className="flex items-center space-x-3 mb-3">
             <div className="bg-white/90 backdrop-blur-sm text-black px-3 py-1 rounded-full text-xs font-medium">
-              Популярное
+              {mediaType === 'movie' ? 'Фильм' : 'Сериал'}
             </div>
             
             {releaseYear && (
@@ -88,7 +89,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
           </div>
           
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 text-balance">
-            {currentAnime.name}
+            {title}
           </h1>
           
           <p className="text-gray-200 mb-6 line-clamp-3 md:line-clamp-4 text-balance">
@@ -97,7 +98,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
           
           <div className="flex items-center space-x-4">
             <Button asChild size="lg" className="rounded-full px-6">
-              <Link to={`/anime/${currentAnime.id}`}>
+              <Link to={`/anime/${currentAnime.id}?type=${mediaType}`}>
                 <Play size={18} className="mr-2" />
                 Смотреть
               </Link>
@@ -109,7 +110,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
               size="lg" 
               className="rounded-full px-6 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
             >
-              <Link to={`/anime/${currentAnime.id}`}>
+              <Link to={`/anime/${currentAnime.id}?type=${mediaType}`}>
                 Подробнее
               </Link>
             </Button>

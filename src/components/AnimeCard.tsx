@@ -15,11 +15,14 @@ const AnimeCard = ({ anime, priority = false }: AnimeCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   
   const formattedRating = anime.vote_average.toFixed(1);
-  const releaseYear = anime.first_air_date ? new Date(anime.first_air_date).getFullYear() : '???';
+  const title = anime.name || anime.title || '';
+  const releaseDate = anime.first_air_date || anime.release_date;
+  const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : '???';
+  const mediaType = anime.media_type || 'tv';
   
   return (
     <Link 
-      to={`/anime/${anime.id}`}
+      to={`/anime/${anime.id}?type=${mediaType}`}
       className="group h-full w-full overflow-hidden rounded-lg"
     >
       <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg transition-all duration-300 hover-scale">
@@ -30,7 +33,7 @@ const AnimeCard = ({ anime, priority = false }: AnimeCardProps) => {
         
         <img
           src={getImageUrl(anime.poster_path, 'w500')}
-          alt={anime.name}
+          alt={title}
           loading={priority ? "eager" : "lazy"}
           onLoad={() => setImageLoaded(true)}
           className={cn(
@@ -49,7 +52,7 @@ const AnimeCard = ({ anime, priority = false }: AnimeCardProps) => {
       
       <div className="mt-2 space-y-1 px-1">
         <h3 className="text-sm font-medium line-clamp-1 text-balance">
-          {anime.name}
+          {title}
         </h3>
         <p className="text-xs text-gray-500">{releaseYear}</p>
       </div>

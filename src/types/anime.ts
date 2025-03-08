@@ -1,28 +1,33 @@
 
 export interface Anime {
   id: number;
-  name: string;
-  original_name: string;
+  name?: string;
+  title?: string;
+  original_name?: string;
+  original_title?: string;
   poster_path: string;
   backdrop_path: string;
   overview: string;
-  first_air_date: string;
+  first_air_date?: string;
+  release_date?: string;
   vote_average: number;
   vote_count: number;
   popularity: number;
   original_language: string;
   genre_ids: number[];
+  media_type?: 'tv' | 'movie';
 }
 
-export interface AnimeDetail extends Anime {
+export interface AnimeDetail extends Omit<Anime, 'genre_ids'> {
   genres: {
     id: number;
     name: string;
   }[];
-  number_of_episodes: number;
-  number_of_seasons: number;
+  number_of_episodes?: number;
+  number_of_seasons?: number;
+  runtime?: number;
   status: string;
-  type: string;
+  type?: string;
   homepage: string;
   production_companies: {
     id: number;
@@ -30,7 +35,7 @@ export interface AnimeDetail extends Anime {
     logo_path: string;
     origin_country: string;
   }[];
-  seasons: {
+  seasons?: {
     id: number;
     name: string;
     overview: string;

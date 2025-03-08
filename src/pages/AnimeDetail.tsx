@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useLocation, Link } from 'react-router-dom';
 import { useAnimeDetails } from '@/hooks/useAnime';
 import { getImageUrl } from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -12,9 +11,14 @@ import { cn } from '@/lib/utils';
 
 const AnimeDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const mediaType = queryParams.get('type') || undefined;
+  
   const animeId = parseInt(id || '0');
-  const { data: anime, isLoading, error } = useAnimeDetails(animeId);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const { data: anime, isLoading, error } = useAnimeDetails(animeId, mediaType);
+  const [backdropLoaded, setBackdropLoaded] = useState(false);
+  const [posterLoaded, setPosterLoaded] = useState(false);
   
   useEffect(() => {
     // Reset scroll position when navigating to a new anime
@@ -60,7 +64,15 @@ const AnimeDetail = () => {
     );
   }
   
-  const releaseYear = anime.first_air_date ? new Date(anime.first_air_date).getFullYear() : '';
+  const title = anime.name || anime.title || '';
+  const originalTitle = anime.original_name || anime.original_title || '';
+  const releaseDate = anime.first_air_date || anime.release_date;
+  const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : '';
+  const duration = anime.number_of_episodes 
+    ? `${anime.number_of_episodes} серий` 
+    : anime.runtime 
+      ? `${anime.runtime} мин.` 
+      : '';
   
   return (
     <div className="min-h-screen pb-16">
@@ -71,9 +83,9 @@ const AnimeDetail = () => {
         <div className="absolute inset-0 bg-gray-100">
           <img
             src={getImageUrl(anime.backdrop_path, 'original')}
-            alt={anime.name}
+            alt={title}
             className="w-full h-full object-cover object-top"
-            onLoad={() => setImageLoaded(true)}
+            onLoad={() => setBackdropLoaded(true)}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
@@ -87,13 +99,13 @@ const AnimeDetail = () => {
           <div className="relative aspect-[2/3] w-full max-w-[250px] md:max-w-none mx-auto md:mx-0 rounded-lg overflow-hidden shadow-xl">
             <div className={cn(
               "absolute inset-0 bg-gray-100",
-              !imageLoaded && "animate-pulse"
+              !posterLoaded && "animate-pulse"
             )} />
             <img
               src={getImageUrl(anime.poster_path, 'w500')}
-              alt={anime.name}
+              alt={title}
               className="w-full h-full object-cover"
-              onLoad={() => setImageLoaded(true)}
+              onLoad={() => setPosterLoaded(true)}
             />
           </div>
           
@@ -111,12 +123,12 @@ const AnimeDetail = () => {
             </div>
             
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-balance">
-              {anime.name}
+              {title}
             </h1>
             
-            {anime.original_name !== anime.name && (
+            {originalTitle !== title && (
               <h2 className="text-lg text-gray-500 mb-4">
-                {anime.original_name}
+                {originalTitle}
               </h2>
             )}
             
@@ -134,10 +146,10 @@ const AnimeDetail = () => {
                 <span className="text-gray-400 ml-1">({anime.vote_count} голосов)</span>
               </div>
               
-              {anime.number_of_episodes && (
+              {duration && (
                 <div className="flex items-center">
                   <Clock size={16} className="mr-1 text-gray-400" />
-                  <span>{anime.number_of_episodes} серий</span>
+                  <span>{duration}</span>
                 </div>
               )}
             </div>
@@ -192,15 +204,15 @@ const AnimeDetail = () => {
                 </div>
                 <div className="flex justify-between py-2 border-b">
                   <span className="text-gray-500">Тип</span>
-                  <span className="font-medium">{anime.type || 'ТВ'}</span>
+                  <span className="font-medium">{anime.media_type === 'movie' ? 'Фильм' : anime.type || 'ТВ'}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
                   <span className="text-gray-500">Дата выхода</span>
-                  <span className="font-medium">{anime.first_air_date || 'Неизвестно'}</span>
+                  <span className="font-medium">{releaseDate || 'Неизвестно'}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
                   <span className="text-gray-500">Язык оригинала</span>
-                  <span className="font-medium capitalize">{anime.original_language}</span>
+                  <span className="font-medium capitalize">{anime.original_language === 'ja' ? 'Японский' : anime.original_language}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
                   <span className="text-gray-500">Популярность</span>

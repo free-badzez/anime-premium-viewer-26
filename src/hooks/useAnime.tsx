@@ -29,10 +29,10 @@ export const useTopRatedAnime = (page: number = 1) => {
   });
 };
 
-export const useAnimeDetails = (id: number) => {
+export const useAnimeDetails = (id: number, mediaType?: string) => {
   return useQuery({
-    queryKey: ['anime-details', id],
-    queryFn: () => getAnimeDetails(id),
+    queryKey: ['anime-details', id, mediaType],
+    queryFn: () => getAnimeDetails(id, mediaType),
     enabled: !!id,
   });
 };
