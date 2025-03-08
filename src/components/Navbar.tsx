@@ -34,14 +34,14 @@ const Navbar = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 md:px-10 py-4 backdrop-blur-lg",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 sm:px-6 md:px-10 py-4 backdrop-blur-lg",
         isScrolled ? "bg-white/80 shadow-sm" : "bg-transparent"
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link 
           to="/"
-          className="text-2xl font-semibold tracking-tight hover-scale"
+          className="text-xl sm:text-2xl font-semibold tracking-tight hover-scale"
         >
           アニメ<span className="text-black/70">Hub</span>
         </Link>
@@ -55,7 +55,7 @@ const Navbar = () => {
                 location.pathname === "/" ? "text-black" : "text-black/60"
               )}
             >
-              Home
+              Главная
             </Link>
             <Link 
               to="/trending" 
@@ -64,7 +64,7 @@ const Navbar = () => {
                 location.pathname === "/trending" ? "text-black" : "text-black/60"
               )}
             >
-              Trending
+              Тренды
             </Link>
             <Link 
               to="/top-rated" 
@@ -73,7 +73,7 @@ const Navbar = () => {
                 location.pathname === "/top-rated" ? "text-black" : "text-black/60"
               )}
             >
-              Top Rated
+              Топ рейтинг
             </Link>
           </nav>
 
@@ -83,7 +83,7 @@ const Navbar = () => {
           >
             <input
               type="text"
-              placeholder="Search anime..."
+              placeholder="Поиск аниме..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full py-2 pl-4 pr-10 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-gray-300 text-sm"
@@ -115,7 +115,7 @@ const Navbar = () => {
             >
               <input
                 type="text"
-                placeholder="Search anime..."
+                placeholder="Поиск аниме..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full py-2 pl-4 pr-10 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-gray-300 text-sm"
@@ -138,7 +138,7 @@ const Navbar = () => {
                     : "text-black/60 hover:bg-gray-50 hover:text-black"
                 )}
               >
-                Home
+                Главная
               </Link>
               <Link 
                 to="/trending" 
@@ -149,7 +149,7 @@ const Navbar = () => {
                     : "text-black/60 hover:bg-gray-50 hover:text-black"
                 )}
               >
-                Trending
+                Тренды
               </Link>
               <Link 
                 to="/top-rated" 
@@ -160,7 +160,7 @@ const Navbar = () => {
                     : "text-black/60 hover:bg-gray-50 hover:text-black"
                 )}
               >
-                Top Rated
+                Топ рейтинг
               </Link>
             </nav>
           </div>

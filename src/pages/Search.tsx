@@ -28,15 +28,15 @@ const Search = () => {
       
       <div className="pt-28 max-w-7xl mx-auto px-4 md:px-10">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Search Results</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Результаты поиска</h1>
           <p className="text-gray-500">
             {searchQuery ? (
               <>
-                Showing results for <span className="font-medium text-black">"{searchQuery}"</span>
-                {data && ` - ${data.total_results} results found`}
+                Найдено для <span className="font-medium text-black">"{searchQuery}"</span>
+                {data && ` - ${data.total_results} результатов`}
               </>
             ) : (
-              'Please enter a search term'
+              'Пожалуйста, введите поисковый запрос'
             )}
           </p>
         </div>
@@ -56,7 +56,7 @@ const Search = () => {
                   disabled={page === 1} 
                   onClick={() => setPage(prev => Math.max(prev - 1, 1))}
                 >
-                  Previous
+                  Назад
                 </Button>
                 
                 <div className="flex items-center justify-center px-4 py-2 border rounded-md min-w-[3rem]">
@@ -68,7 +68,7 @@ const Search = () => {
                   disabled={page === data.total_pages}
                   onClick={() => setPage(prev => Math.min(prev + 1, data.total_pages))}
                 >
-                  Next
+                  Вперед
                 </Button>
               </div>
             )}
@@ -78,9 +78,9 @@ const Search = () => {
             <div className="bg-gray-100 p-6 rounded-full mb-6">
               <SearchIcon size={32} className="text-gray-400" />
             </div>
-            <h2 className="text-xl font-medium mb-2">Search for Anime</h2>
+            <h2 className="text-xl font-medium mb-2">Поиск аниме</h2>
             <p className="text-gray-500 max-w-md">
-              Enter a search term in the search bar above to find your favorite anime.
+              Введите поисковый запрос в поле поиска выше, чтобы найти ваше любимое аниме.
             </p>
           </div>
         )}

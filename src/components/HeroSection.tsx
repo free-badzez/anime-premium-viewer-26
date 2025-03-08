@@ -44,7 +44,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
     : null;
   
   return (
-    <div className="relative w-full overflow-hidden h-[70vh] md:h-[80vh]">
+    <div className="relative w-full overflow-hidden h-[60vh] sm:h-[70vh] md:h-[80vh]">
       {/* Background image */}
       <div className="absolute inset-0 bg-gray-100">
         <img
@@ -62,7 +62,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
       </div>
       
       {/* Content overlay */}
-      <div className="relative h-full max-w-7xl mx-auto px-6 md:px-10 py-8 flex flex-col justify-end md:justify-center md:items-start">
+      <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-8 flex flex-col justify-end md:justify-center md:items-start">
         <div 
           className={cn(
             "max-w-2xl transition-all duration-500 transform",
@@ -71,7 +71,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
         >
           <div className="flex items-center space-x-3 mb-3">
             <div className="bg-white/90 backdrop-blur-sm text-black px-3 py-1 rounded-full text-xs font-medium">
-              Featured
+              Популярное
             </div>
             
             {releaseYear && (
@@ -87,7 +87,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
             </div>
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3 text-balance">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 text-balance">
             {currentAnime.name}
           </h1>
           
@@ -99,7 +99,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
             <Button asChild size="lg" className="rounded-full px-6">
               <Link to={`/anime/${currentAnime.id}`}>
                 <Play size={18} className="mr-2" />
-                Watch Now
+                Смотреть
               </Link>
             </Button>
             
@@ -110,7 +110,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
               className="rounded-full px-6 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
             >
               <Link to={`/anime/${currentAnime.id}`}>
-                More Details
+                Подробнее
               </Link>
             </Button>
           </div>
@@ -139,7 +139,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
                   ? "bg-white/80 w-12" 
                   : "bg-white/30 hover:bg-white/50"
               )}
-              aria-label={`View slide ${index + 1}`}
+              aria-label={`Смотреть слайд ${index + 1}`}
             />
           ))}
         </div>

@@ -47,12 +47,12 @@ const AnimeDetail = () => {
       <div className="min-h-screen">
         <Navbar />
         <div className="pt-28 max-w-7xl mx-auto px-4 md:px-10 text-center">
-          <h2 className="text-2xl font-semibold mb-4">Failed to load anime details</h2>
-          <p className="text-gray-500 mb-6">{error?.message || 'Something went wrong'}</p>
+          <h2 className="text-2xl font-semibold mb-4">Не удалось загрузить информацию об аниме</h2>
+          <p className="text-gray-500 mb-6">{error?.message || 'Что-то пошло не так'}</p>
           <Button asChild>
             <Link to="/">
               <ArrowLeft size={16} className="mr-2" />
-              Back to Home
+              Вернуться на главную
             </Link>
           </Button>
         </div>
@@ -110,7 +110,7 @@ const AnimeDetail = () => {
               ))}
             </div>
             
-            <h1 className="text-3xl md:text-4xl font-bold mb-2 text-balance">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-balance">
               {anime.name}
             </h1>
             
@@ -131,28 +131,28 @@ const AnimeDetail = () => {
               <div className="flex items-center">
                 <Star size={16} className="mr-1 text-yellow-400 fill-yellow-400" />
                 <span>{anime.vote_average.toFixed(1)}</span>
-                <span className="text-gray-400 ml-1">({anime.vote_count} votes)</span>
+                <span className="text-gray-400 ml-1">({anime.vote_count} голосов)</span>
               </div>
               
               {anime.number_of_episodes && (
                 <div className="flex items-center">
                   <Clock size={16} className="mr-1 text-gray-400" />
-                  <span>{anime.number_of_episodes} episodes</span>
+                  <span>{anime.number_of_episodes} серий</span>
                 </div>
               )}
             </div>
             
             <div className="mb-8">
-              <h3 className="font-medium mb-2">Overview</h3>
+              <h3 className="font-medium mb-2">Обзор</h3>
               <p className="text-gray-600 leading-relaxed text-balance">
-                {anime.overview || 'No overview available.'}
+                {anime.overview || 'Описание отсутствует.'}
               </p>
             </div>
             
             <div className="flex flex-wrap gap-4 mb-8">
               <Button size="lg" className="rounded-full px-6">
                 <Play size={18} className="mr-2" />
-                Watch Now
+                Смотреть
               </Button>
             </div>
             
@@ -160,7 +160,7 @@ const AnimeDetail = () => {
             
             {anime.seasons && anime.seasons.length > 0 && (
               <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4">Seasons</h3>
+                <h3 className="text-xl font-semibold mb-4">Сезоны</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {anime.seasons.map((season) => (
                     <div key={season.id} className="rounded-lg border bg-card shadow-sm hover-scale">
@@ -174,7 +174,7 @@ const AnimeDetail = () => {
                       <div className="p-3">
                         <h4 className="font-medium text-sm line-clamp-1">{season.name}</h4>
                         <p className="text-xs text-gray-500 mt-1">
-                          {season.episode_count} episodes
+                          {season.episode_count} серий
                         </p>
                       </div>
                     </div>
@@ -184,26 +184,26 @@ const AnimeDetail = () => {
             )}
             
             <div className="mb-8">
-              <h3 className="text-xl font-semibold mb-4">Details</h3>
+              <h3 className="text-xl font-semibold mb-4">Детали</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Status</span>
+                  <span className="text-gray-500">Статус</span>
                   <span className="font-medium">{anime.status}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Type</span>
-                  <span className="font-medium">{anime.type || 'TV'}</span>
+                  <span className="text-gray-500">Тип</span>
+                  <span className="font-medium">{anime.type || 'ТВ'}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">First Air Date</span>
-                  <span className="font-medium">{anime.first_air_date || 'Unknown'}</span>
+                  <span className="text-gray-500">Дата выхода</span>
+                  <span className="font-medium">{anime.first_air_date || 'Неизвестно'}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Original Language</span>
+                  <span className="text-gray-500">Язык оригинала</span>
                   <span className="font-medium capitalize">{anime.original_language}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Popularity</span>
+                  <span className="text-gray-500">Популярность</span>
                   <span className="font-medium">{anime.popularity.toFixed(0)}</span>
                 </div>
               </div>

@@ -23,7 +23,7 @@ const Index = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-10">
         {/* Trending Anime */}
         <AnimeGrid
-          title="Trending Now"
+          title="В тренде"
           animes={trendingData?.results || []}
           isLoading={trendingLoading}
           error={trendingError as Error}
@@ -31,7 +31,7 @@ const Index = () => {
         
         {/* Popular Anime */}
         <AnimeGrid
-          title="Popular Anime"
+          title="Популярное аниме"
           animes={popularData?.results || []}
           isLoading={popularLoading}
           error={popularError as Error}
@@ -39,7 +39,7 @@ const Index = () => {
         
         {/* Top Rated Anime */}
         <AnimeGrid
-          title="Top Rated"
+          title="Топ рейтинга"
           animes={topRatedData?.results || []}
           isLoading={topRatedLoading}
           error={topRatedError as Error}

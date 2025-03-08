@@ -4,6 +4,7 @@ import { Anime, AnimeDetail, TMDBResponse } from "@/types/anime";
 const TMDB_API_KEY = "de83af9bf3f4cf2d61cb8a9467045768";
 const BASE_URL = "https://api.themoviedb.org/3";
 const ANIME_TYPE_ID = 16; // Animation genre ID in TMDB
+const LANGUAGE = "ru-RU"; // Изменение языка на русский
 
 // Helper function to create image URLs
 export const getImageUrl = (path: string | null, size: string = "original") => {
@@ -15,6 +16,7 @@ export const getImageUrl = (path: string | null, size: string = "original") => {
 const fetchFromTMDB = async <T>(endpoint: string, params: Record<string, string> = {}): Promise<T> => {
   const queryParams = new URLSearchParams({
     api_key: TMDB_API_KEY,
+    language: LANGUAGE, // Добавление параметра языка ко всем запросам
     ...params,
   });
   
