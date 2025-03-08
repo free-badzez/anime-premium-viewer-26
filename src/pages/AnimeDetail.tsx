@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { useAnimeDetails } from '@/hooks/useAnime';
@@ -81,12 +82,14 @@ const AnimeDetail = () => {
       {/* Backdrop Image */}
       <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden">
         <div className="absolute inset-0 bg-gray-100">
-          <img
-            src={getImageUrl(anime.backdrop_path, 'original')}
-            alt={title}
-            className="w-full h-full object-cover object-top"
-            onLoad={() => setBackdropLoaded(true)}
-          />
+          {anime.backdrop_path && (
+            <img
+              src={getImageUrl(anime.backdrop_path, 'original')}
+              alt={title}
+              className="w-full h-full object-cover object-top"
+              onLoad={() => setBackdropLoaded(true)}
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
         </div>
@@ -101,18 +104,24 @@ const AnimeDetail = () => {
               "absolute inset-0 bg-gray-100",
               !posterLoaded && "animate-pulse"
             )} />
-            <img
-              src={getImageUrl(anime.poster_path, 'w500')}
-              alt={title}
-              className="w-full h-full object-cover"
-              onLoad={() => setPosterLoaded(true)}
-            />
+            {anime.poster_path ? (
+              <img
+                src={getImageUrl(anime.poster_path, 'w500')}
+                alt={title}
+                className="w-full h-full object-cover"
+                onLoad={() => setPosterLoaded(true)}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
+                Нет постера
+              </div>
+            )}
           </div>
           
           {/* Details */}
           <div className="animate-fade-in">
             <div className="flex flex-wrap items-center gap-3 mb-3">
-              {anime.genres.slice(0, 3).map((genre) => (
+              {anime.genres && anime.genres.slice(0, 3).map((genre) => (
                 <div 
                   key={genre.id} 
                   className="px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-medium"
