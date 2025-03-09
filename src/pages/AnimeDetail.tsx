@@ -52,12 +52,12 @@ const AnimeDetail = () => {
       <div className="min-h-screen">
         <Navbar />
         <div className="pt-28 max-w-7xl mx-auto px-4 md:px-10 text-center">
-          <h2 className="text-2xl font-semibold mb-4">Не удалось загрузить информацию об аниме</h2>
-          <p className="text-gray-500 mb-6">{error?.message || 'Что-то пошло не так'}</p>
+          <h2 className="text-2xl font-semibold mb-4">Failed to load anime information</h2>
+          <p className="text-gray-500 mb-6">{error?.message || 'Something went wrong'}</p>
           <Button asChild>
             <Link to="/">
               <ArrowLeft size={16} className="mr-2" />
-              Вернуться на главную
+              Return to home
             </Link>
           </Button>
         </div>
@@ -70,9 +70,9 @@ const AnimeDetail = () => {
   const releaseDate = anime.first_air_date || anime.release_date;
   const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : '';
   const duration = anime.number_of_episodes 
-    ? `${anime.number_of_episodes} серий` 
+    ? `${anime.number_of_episodes} episodes` 
     : anime.runtime 
-      ? `${anime.runtime} мин.` 
+      ? `${anime.runtime} min.` 
       : '';
   
   return (
@@ -113,7 +113,7 @@ const AnimeDetail = () => {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
-                Нет постера
+                No poster
               </div>
             )}
           </div>
@@ -152,7 +152,7 @@ const AnimeDetail = () => {
               <div className="flex items-center">
                 <Star size={16} className="mr-1 text-yellow-400 fill-yellow-400" />
                 <span>{anime.vote_average.toFixed(1)}</span>
-                <span className="text-gray-400 ml-1">({anime.vote_count} голосов)</span>
+                <span className="text-gray-400 ml-1">({anime.vote_count} votes)</span>
               </div>
               
               {duration && (
@@ -164,16 +164,16 @@ const AnimeDetail = () => {
             </div>
             
             <div className="mb-8">
-              <h3 className="font-medium mb-2">Обзор</h3>
+              <h3 className="font-medium mb-2">Overview</h3>
               <p className="text-gray-600 leading-relaxed text-balance">
-                {anime.overview || 'Описание отсутствует.'}
+                {anime.overview || 'No description available.'}
               </p>
             </div>
             
             <div className="flex flex-wrap gap-4 mb-8">
               <Button size="lg" className="rounded-full px-6">
                 <Play size={18} className="mr-2" />
-                Смотреть
+                Watch
               </Button>
             </div>
             
@@ -181,7 +181,7 @@ const AnimeDetail = () => {
             
             {anime.seasons && anime.seasons.length > 0 && (
               <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4">Сезоны</h3>
+                <h3 className="text-xl font-semibold mb-4">Seasons</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {anime.seasons.map((season) => (
                     <div key={season.id} className="rounded-lg border bg-card shadow-sm hover-scale">
@@ -195,7 +195,7 @@ const AnimeDetail = () => {
                       <div className="p-3">
                         <h4 className="font-medium text-sm line-clamp-1">{season.name}</h4>
                         <p className="text-xs text-gray-500 mt-1">
-                          {season.episode_count} серий
+                          {season.episode_count} episodes
                         </p>
                       </div>
                     </div>
@@ -205,26 +205,26 @@ const AnimeDetail = () => {
             )}
             
             <div className="mb-8">
-              <h3 className="text-xl font-semibold mb-4">Детали</h3>
+              <h3 className="text-xl font-semibold mb-4">Details</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Статус</span>
+                  <span className="text-gray-500">Status</span>
                   <span className="font-medium">{anime.status}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Тип</span>
-                  <span className="font-medium">{anime.media_type === 'movie' ? 'Фильм' : anime.type || 'ТВ'}</span>
+                  <span className="text-gray-500">Type</span>
+                  <span className="font-medium">{anime.media_type === 'movie' ? 'Movie' : anime.type || 'TV'}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Дата выхода</span>
-                  <span className="font-medium">{releaseDate || 'Неизвестно'}</span>
+                  <span className="text-gray-500">Release Date</span>
+                  <span className="font-medium">{releaseDate || 'Unknown'}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Язык оригинала</span>
-                  <span className="font-medium capitalize">{anime.original_language === 'ja' ? 'Японский' : anime.original_language}</span>
+                  <span className="text-gray-500">Original Language</span>
+                  <span className="font-medium capitalize">{anime.original_language === 'ja' ? 'Japanese' : anime.original_language}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Популярность</span>
+                  <span className="text-gray-500">Popularity</span>
                   <span className="font-medium">{anime.popularity.toFixed(0)}</span>
                 </div>
               </div>
