@@ -56,7 +56,7 @@ export const searchAnime = async (query: string, page: number = 1) => {
   };
 };
 
-// Get Dailymotion video ID for an anime
+// Get YouTube video ID for an anime
 export const getAnimeVideo = async (title: string, specificVideoId?: string): Promise<string> => {
   // If a specific video ID is provided, use it directly
   if (specificVideoId) {
@@ -64,28 +64,26 @@ export const getAnimeVideo = async (title: string, specificVideoId?: string): Pr
   }
   
   // This is a mock function that would typically call a real API
-  // For now, we'll just return a hardcoded Dailymotion video ID based on the title
-  // In a real implementation, you would search the Dailymotion API
+  // For now, we'll just return a hardcoded YouTube video ID based on the title
   
   // Default video ID (Anime trailer)
-  let videoId = 'x8bykr9';
+  let videoId = 'o9lAlo3abBw'; // Default anime trailer
   
   // Check for common titles and assign specific videos
-  // This is just a demo implementation
   const lowerTitle = title.toLowerCase();
   if (lowerTitle.includes('attack on titan') || lowerTitle.includes('shingeki')) {
-    videoId = 'x87cz33';
+    videoId = 'MGRm4IzK1SQ'; // Attack on Titan trailer
   } else if (lowerTitle.includes('demon slayer') || lowerTitle.includes('kimetsu')) {
-    videoId = 'x8czs1s';
+    videoId = 'VQGCKyvzIM4'; // Demon Slayer trailer
   } else if (lowerTitle.includes('jujutsu kaisen')) {
-    videoId = 'x8czjzl';
+    videoId = 'pkKu9hLT-t8'; // Jujutsu Kaisen trailer
   } else if (lowerTitle.includes('naruto')) {
-    videoId = 'x8fwstp';
+    videoId = 'QczGoCmX-pI'; // Naruto trailer
   } else if (lowerTitle.includes('one piece')) {
-    videoId = 'x8g01jj';
+    videoId = 'S8_YwFLCh4U'; // One Piece trailer
   } else {
-    // Add the provided Dailymotion video ID as default fallback
-    videoId = 'x9ftgk2';
+    // Default anime collection video
+    videoId = 'dQw4w9WgXcQ';
   }
   
   return videoId;

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAnimeDetails, useAnimeVideo } from '@/hooks/useAnime';
@@ -7,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getImageUrl } from '@/lib/api';
 import { cn } from '@/lib/utils';
+
 const WatchPage = () => {
   const {
     id
@@ -41,6 +43,7 @@ const WatchPage = () => {
   };
   const toggleMute = () => setIsMuted(!isMuted);
   const togglePlay = () => setIsPlaying(!isPlaying);
+  
   return <div className="min-h-screen bg-black text-white">
       <div className="flex flex-col h-screen">
         {/* Header */}
@@ -90,10 +93,15 @@ const WatchPage = () => {
               {isLoading ? <div className="absolute inset-0 flex items-center justify-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
                 </div> : <div className="h-full w-full">
-                  <iframe src={`https://www.dailymotion.com/embed/video/${videoId}?autoplay=1&mute=${isMuted ? 1 : 0}&queue-enable=0&ui-highlight=FFC300&ui-logo=0&sharing-enable=0&end-screen-enable=0&related-videos=0&related-enable=0`} width="100%" height="100%" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen title="Anime Video Player"></iframe>
-                  
-                  {/* Custom controls overlay */}
-                  
+                  <iframe 
+                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&showinfo=0&modestbranding=1`} 
+                    width="100%" 
+                    height="100%" 
+                    frameBorder="0" 
+                    allow="autoplay; fullscreen" 
+                    allowFullScreen 
+                    title="Anime Video Player"
+                  ></iframe>
                 </div>}
               
               {/* Button to show episode list when hidden */}
@@ -138,16 +146,16 @@ const WatchPage = () => {
                       <div className="flex flex-col">
                         <span className="text-gray-400 mb-1">SUB:</span>
                         <div className="flex space-x-2">
-                          <Button size="sm" variant="outline" className="bg-yellow-500 text-black hover:bg-yellow-600">VidSrc</Button>
-                          <Button size="sm" variant="outline" className="bg-gray-800 hover:bg-gray-700">MegaCloud</Button>
+                          <Button size="sm" variant="outline" className="bg-yellow-500 text-black hover:bg-yellow-600">YouTube</Button>
+                          <Button size="sm" variant="outline" className="bg-gray-800 hover:bg-gray-700">Crunchyroll</Button>
                         </div>
                       </div>
                       
                       <div className="flex flex-col">
                         <span className="text-gray-400 mb-1">DUB:</span>
                         <div className="flex space-x-2">
-                          <Button size="sm" variant="outline" className="bg-gray-800 hover:bg-gray-700">VidSrc</Button>
-                          <Button size="sm" variant="outline" className="bg-gray-800 hover:bg-gray-700">MegaCloud</Button>
+                          <Button size="sm" variant="outline" className="bg-gray-800 hover:bg-gray-700">YouTube</Button>
+                          <Button size="sm" variant="outline" className="bg-gray-800 hover:bg-gray-700">Funimation</Button>
                         </div>
                       </div>
                     </div>
@@ -170,4 +178,5 @@ const WatchPage = () => {
       </div>
     </div>;
 };
+
 export default WatchPage;
