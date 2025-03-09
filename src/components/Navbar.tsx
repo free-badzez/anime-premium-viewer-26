@@ -55,7 +55,7 @@ const Navbar = () => {
                 location.pathname === "/" ? "text-black" : "text-black/60"
               )}
             >
-              Главная
+              Home
             </Link>
             <Link 
               to="/trending" 
@@ -64,7 +64,7 @@ const Navbar = () => {
                 location.pathname === "/trending" ? "text-black" : "text-black/60"
               )}
             >
-              Тренды
+              Trending
             </Link>
             <Link 
               to="/top-rated" 
@@ -73,7 +73,7 @@ const Navbar = () => {
                 location.pathname === "/top-rated" ? "text-black" : "text-black/60"
               )}
             >
-              Топ рейтинг
+              Top Rated
             </Link>
           </nav>
 
@@ -83,7 +83,7 @@ const Navbar = () => {
           >
             <input
               type="text"
-              placeholder="Поиск аниме..."
+              placeholder="Search anime..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full py-2 pl-4 pr-10 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-gray-300 text-sm"
@@ -115,7 +115,7 @@ const Navbar = () => {
             >
               <input
                 type="text"
-                placeholder="Поиск аниме..."
+                placeholder="Search anime..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full py-2 pl-4 pr-10 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-gray-300 text-sm"
@@ -138,7 +138,7 @@ const Navbar = () => {
                     : "text-black/60 hover:bg-gray-50 hover:text-black"
                 )}
               >
-                Главная
+                Home
               </Link>
               <Link 
                 to="/trending" 
@@ -149,7 +149,7 @@ const Navbar = () => {
                     : "text-black/60 hover:bg-gray-50 hover:text-black"
                 )}
               >
-                Тренды
+                Trending
               </Link>
               <Link 
                 to="/top-rated" 
@@ -160,7 +160,7 @@ const Navbar = () => {
                     : "text-black/60 hover:bg-gray-50 hover:text-black"
                 )}
               >
-                Топ рейтинг
+                Top Rated
               </Link>
             </nav>
           </div>

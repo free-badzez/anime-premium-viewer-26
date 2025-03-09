@@ -72,7 +72,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
         >
           <div className="flex items-center space-x-3 mb-3">
             <div className="bg-white/90 backdrop-blur-sm text-black px-3 py-1 rounded-full text-xs font-medium">
-              {mediaType === 'movie' ? 'Фильм' : 'Сериал'}
+              {mediaType === 'movie' ? 'Movie' : 'Series'}
             </div>
             
             {releaseYear && (
@@ -100,7 +100,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
             <Button asChild size="lg" className="rounded-full px-6">
               <Link to={`/anime/${currentAnime.id}?type=${mediaType}`}>
                 <Play size={18} className="mr-2" />
-                Смотреть
+                Watch
               </Link>
             </Button>
             
@@ -111,7 +111,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
               className="rounded-full px-6 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
             >
               <Link to={`/anime/${currentAnime.id}?type=${mediaType}`}>
-                Подробнее
+                Details
               </Link>
             </Button>
           </div>
@@ -140,7 +140,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
                   ? "bg-white/80 w-12" 
                   : "bg-white/30 hover:bg-white/50"
               )}
-              aria-label={`Смотреть слайд ${index + 1}`}
+              aria-label={`View slide ${index + 1}`}
             />
           ))}
         </div>

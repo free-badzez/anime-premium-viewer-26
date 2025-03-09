@@ -22,9 +22,9 @@ const Index = () => {
       
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-10">
-        {/* Современные аниме (добавлена новая секция) */}
+        {/* Recent Anime */}
         <AnimeGrid
-          title="Современные аниме"
+          title="Recent & Popular Anime"
           animes={recentData?.results || []}
           isLoading={recentLoading}
           error={recentError as Error}
@@ -32,7 +32,7 @@ const Index = () => {
 
         {/* Trending Anime */}
         <AnimeGrid
-          title="В тренде"
+          title="Trending Now"
           animes={trendingData?.results || []}
           isLoading={trendingLoading}
           error={trendingError as Error}
@@ -40,7 +40,7 @@ const Index = () => {
         
         {/* Popular Anime */}
         <AnimeGrid
-          title="Популярное аниме"
+          title="Popular Anime"
           animes={popularData?.results || []}
           isLoading={popularLoading}
           error={popularError as Error}
@@ -48,7 +48,7 @@ const Index = () => {
         
         {/* Top Rated Anime */}
         <AnimeGrid
-          title="Топ рейтинга"
+          title="Top Rated"
           animes={topRatedData?.results || []}
           isLoading={topRatedLoading}
           error={topRatedError as Error}
