@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getImageUrl } from '@/lib/api';
 import { cn } from '@/lib/utils';
+
 const WatchPage = () => {
   const {
     id
@@ -41,6 +42,7 @@ const WatchPage = () => {
   };
   const toggleMute = () => setIsMuted(!isMuted);
   const togglePlay = () => setIsPlaying(!isPlaying);
+
   return <div className="min-h-screen bg-black text-white">
       <div className="flex flex-col h-screen">
         {/* Header */}
@@ -90,7 +92,15 @@ const WatchPage = () => {
               {isLoading ? <div className="absolute inset-0 flex items-center justify-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
                 </div> : <div className="h-full w-full">
-                  <iframe src={`https://www.dailymotion.com/embed/video/${videoId}?autoplay=1&mute=${isMuted ? 1 : 0}`} width="100%" height="100%" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen title="Anime Video Player"></iframe>
+                  <iframe 
+                    src={`https://www.dailymotion.com/embed/video/${videoId}?autoplay=1&mute=${isMuted ? 1 : 0}&queue-enable=0&ui-highlight=FFC300&ui-logo=0&sharing-enable=0&end-screen-enable=0&related-videos=0&related-enable=0`} 
+                    width="100%" 
+                    height="100%" 
+                    frameBorder="0" 
+                    allow="autoplay; fullscreen" 
+                    allowFullScreen 
+                    title="Anime Video Player"
+                  ></iframe>
                   
                   {/* Custom controls overlay */}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
@@ -194,4 +204,5 @@ const WatchPage = () => {
       </div>
     </div>;
 };
+
 export default WatchPage;
