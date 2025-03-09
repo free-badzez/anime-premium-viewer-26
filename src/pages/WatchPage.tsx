@@ -19,7 +19,10 @@ const WatchPage = () => {
   const navigate = useNavigate();
   
   const { data: anime, isLoading: isLoadingAnime } = useAnimeDetails(animeId);
-  const { data: videoId, isLoading: isLoadingVideo } = useAnimeVideo(anime?.title || anime?.name || '');
+  
+  // Use the specific Dailymotion video ID for this anime
+  const specificVideoId = 'x9ftgk2'; // The ID from https://dai.ly/x9ftgk2
+  const { data: videoId, isLoading: isLoadingVideo } = useAnimeVideo(anime?.title || anime?.name || '', specificVideoId);
   
   const title = anime?.name || anime?.title || 'Loading...';
   const isLoading = isLoadingAnime || isLoadingVideo;

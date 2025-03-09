@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import {
   getTrendingAnime,
@@ -46,10 +45,10 @@ export const useAnimeDetails = (id: number, mediaType?: string) => {
   });
 };
 
-export const useAnimeVideo = (title: string) => {
+export const useAnimeVideo = (title: string, specificVideoId?: string) => {
   return useQuery({
-    queryKey: ['anime-video', title],
-    queryFn: () => getAnimeVideo(title),
+    queryKey: ['anime-video', title, specificVideoId],
+    queryFn: () => getAnimeVideo(title, specificVideoId),
     enabled: !!title,
   });
 };

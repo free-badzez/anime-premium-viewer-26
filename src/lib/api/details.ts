@@ -57,7 +57,12 @@ export const searchAnime = async (query: string, page: number = 1) => {
 };
 
 // Get Dailymotion video ID for an anime
-export const getAnimeVideo = async (title: string): Promise<string> => {
+export const getAnimeVideo = async (title: string, specificVideoId?: string): Promise<string> => {
+  // If a specific video ID is provided, use it directly
+  if (specificVideoId) {
+    return specificVideoId;
+  }
+  
   // This is a mock function that would typically call a real API
   // For now, we'll just return a hardcoded Dailymotion video ID based on the title
   // In a real implementation, you would search the Dailymotion API
@@ -78,6 +83,9 @@ export const getAnimeVideo = async (title: string): Promise<string> => {
     videoId = 'x8fwstp';
   } else if (lowerTitle.includes('one piece')) {
     videoId = 'x8g01jj';
+  } else {
+    // Add the provided Dailymotion video ID as default fallback
+    videoId = 'x9ftgk2';
   }
   
   return videoId;
