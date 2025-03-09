@@ -30,7 +30,7 @@ const TV = () => {
             <p className="text-gray-500 mb-4">Failed to load TV shows</p>
           </div>
         ) : (
-          <AnimeGrid animes={data?.results || []} />
+          <AnimeGrid animes={data?.results || []} isLoading={isLoading} error={error} />
         )}
       </div>
     </div>
