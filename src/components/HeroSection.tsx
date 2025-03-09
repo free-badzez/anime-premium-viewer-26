@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Play, Calendar, Star, Clock } from 'lucide-react';
 import { Anime } from '@/types/anime';
@@ -15,6 +15,8 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isVideoBackground, setIsVideoBackground] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   
   const currentAnime = animes[currentIndex];
   
@@ -46,18 +48,36 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
   
   return (
     <div className="relative w-full overflow-hidden h-[60vh] sm:h-[70vh] md:h-[80vh]">
-      {/* Background image */}
+      {/* Background media (image or video) */}
       <div className="absolute inset-0 bg-gray-100">
-        <img
-          src={getImageUrl(currentAnime.backdrop_path, 'original')}
-          alt={title}
-          onLoad={() => setImageLoaded(true)}
-          className={cn(
-            "w-full h-full object-cover object-top transition-opacity duration-500",
-            imageLoaded ? "opacity-100" : "opacity-0",
-            isTransitioning ? "opacity-0" : "opacity-100"
-          )}
-        />
+        {isVideoBackground ? (
+          <video
+            ref={videoRef}
+            className={cn(
+              "w-full h-full object-cover object-top transition-opacity duration-500",
+              isTransitioning ? "opacity-0" : "opacity-100"
+            )}
+            autoPlay
+            muted
+            loop
+            playsInline
+          >
+            {/* Video source would be set dynamically when needed */}
+            <source src="" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          <img
+            src={getImageUrl(currentAnime.backdrop_path, 'original')}
+            alt={title}
+            onLoad={() => setImageLoaded(true)}
+            className={cn(
+              "w-full h-full object-cover object-top transition-opacity duration-500",
+              imageLoaded ? "opacity-100" : "opacity-0",
+              isTransitioning ? "opacity-0" : "opacity-100"
+            )}
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
       </div>

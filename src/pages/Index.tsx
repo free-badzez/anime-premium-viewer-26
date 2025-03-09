@@ -15,9 +15,9 @@ const Index = () => {
     <div className="min-h-screen pb-10">
       <Navbar />
       
-      {/* Hero Section */}
+      {/* Hero Section - Using more trending anime for rotation */}
       <section className="w-full">
-        <HeroSection animes={trendingData?.results?.slice(0, 5) || []} />
+        <HeroSection animes={trendingData?.results?.slice(0, 10) || []} />
       </section>
       
       {/* Main Content */}
