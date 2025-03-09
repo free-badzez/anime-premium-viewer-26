@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import AnimeDetail from "./pages/AnimeDetail";
 import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
+import WatchPage from "./pages/WatchPage";
+import TV from "./pages/TV";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,7 +29,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/anime/:id" element={<AnimeDetail />} />
+          <Route path="/watch/:id" element={<WatchPage />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/tv" element={<TV />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Play, Calendar, Star, Clock } from 'lucide-react';
 import { Anime } from '@/types/anime';
 import { getImageUrl } from '@/lib/api';
@@ -17,6 +17,7 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isVideoBackground, setIsVideoBackground] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const navigate = useNavigate();
   
   const currentAnime = animes[currentIndex];
   
@@ -45,6 +46,10 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
   const releaseDate = currentAnime.first_air_date || currentAnime.release_date;
   const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : null;
   const mediaType = currentAnime.media_type || 'tv';
+  
+  const handleWatchClick = () => {
+    navigate(`/watch/${currentAnime.id}`);
+  };
   
   return (
     <div className="relative w-full overflow-hidden h-[60vh] sm:h-[70vh] md:h-[80vh]">
@@ -117,11 +122,13 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
           </p>
           
           <div className="flex items-center space-x-4">
-            <Button asChild size="lg" className="rounded-full px-6">
-              <Link to={`/anime/${currentAnime.id}?type=${mediaType}`}>
-                <Play size={18} className="mr-2" />
-                Watch
-              </Link>
+            <Button 
+              size="lg" 
+              className="rounded-full px-6"
+              onClick={handleWatchClick}
+            >
+              <Play size={18} className="mr-2" />
+              Watch
             </Button>
             
             <Button 

@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation, Link } from 'react-router-dom';
+import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAnimeDetails } from '@/hooks/useAnime';
-import { getImageUrl, getAnimeVideo } from '@/lib/api';
+import { getImageUrl } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Play, Star, Calendar, Clock, ArrowLeft, User } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import Navbar from '@/components/Navbar';
-import VideoPlayer from '@/components/VideoPlayer';
 import { cn } from '@/lib/utils';
 
 const AnimeDetail = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const mediaType = queryParams.get('type') || undefined;
   
@@ -20,33 +20,13 @@ const AnimeDetail = () => {
   const { data: anime, isLoading, error } = useAnimeDetails(animeId, mediaType);
   const [backdropLoaded, setBackdropLoaded] = useState(false);
   const [posterLoaded, setPosterLoaded] = useState(false);
-  const [videoId, setVideoId] = useState<string | null>(null);
-  const [isVideoOpen, setIsVideoOpen] = useState(false);
   
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
   
-  useEffect(() => {
-    if (anime) {
-      const fetchVideoId = async () => {
-        try {
-          const title = anime.name || anime.title || '';
-          const id = await getAnimeVideo(title);
-          setVideoId(id);
-        } catch (error) {
-          console.error('Failed to get video ID:', error);
-        }
-      };
-      
-      fetchVideoId();
-    }
-  }, [anime]);
-  
   const handleWatchClick = () => {
-    if (videoId) {
-      setIsVideoOpen(true);
-    }
+    navigate(`/watch/${animeId}`);
   };
   
   if (isLoading) {
@@ -103,14 +83,6 @@ const AnimeDetail = () => {
   return (
     <div className="min-h-screen pb-16">
       <Navbar />
-      
-      {videoId && (
-        <VideoPlayer 
-          videoId={videoId} 
-          isOpen={isVideoOpen} 
-          onClose={() => setIsVideoOpen(false)} 
-        />
-      )}
       
       <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden">
         <div className="absolute inset-0 bg-gray-100">
