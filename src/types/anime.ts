@@ -18,6 +18,26 @@ export interface Anime {
   media_type?: 'tv' | 'movie';
 }
 
+export interface CastMember {
+  id: number;
+  name: string;
+  character: string;
+  profile_path: string | null;
+  order: number;
+}
+
+export interface Credits {
+  id: number;
+  cast: CastMember[];
+  crew: {
+    id: number;
+    name: string;
+    job: string;
+    department: string;
+    profile_path: string | null;
+  }[];
+}
+
 export interface AnimeDetail extends Omit<Anime, 'genre_ids'> {
   genres: {
     id: number;
@@ -44,6 +64,7 @@ export interface AnimeDetail extends Omit<Anime, 'genre_ids'> {
     poster_path: string;
     season_number: number;
   }[];
+  credits?: Credits;
 }
 
 export interface TMDBResponse<T> {

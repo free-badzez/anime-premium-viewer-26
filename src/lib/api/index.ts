@@ -7,4 +7,4 @@ export { getTrendingAnime } from './trending';
 export { getPopularAnime } from './popular';
 export { getTopRatedAnime } from './top-rated';
 export { getRecentAnime } from './recent';
-export { getAnimeDetails, searchAnime } from './details';
+export { getAnimeDetails, searchAnime, getAnimeVideo } from './details';

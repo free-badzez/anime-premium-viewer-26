@@ -1,13 +1,13 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { useAnimeDetails } from '@/hooks/useAnime';
-import { getImageUrl } from '@/lib/api';
+import { getImageUrl, getAnimeVideo } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Play, Star, Calendar, Clock, ArrowLeft } from 'lucide-react';
+import { Play, Star, Calendar, Clock, ArrowLeft, User } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import Navbar from '@/components/Navbar';
+import VideoPlayer from '@/components/VideoPlayer';
 import { cn } from '@/lib/utils';
 
 const AnimeDetail = () => {
@@ -20,11 +20,34 @@ const AnimeDetail = () => {
   const { data: anime, isLoading, error } = useAnimeDetails(animeId, mediaType);
   const [backdropLoaded, setBackdropLoaded] = useState(false);
   const [posterLoaded, setPosterLoaded] = useState(false);
+  const [videoId, setVideoId] = useState<string | null>(null);
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
   
   useEffect(() => {
-    // Reset scroll position when navigating to a new anime
     window.scrollTo(0, 0);
   }, [id]);
+  
+  useEffect(() => {
+    if (anime) {
+      const fetchVideoId = async () => {
+        try {
+          const title = anime.name || anime.title || '';
+          const id = await getAnimeVideo(title);
+          setVideoId(id);
+        } catch (error) {
+          console.error('Failed to get video ID:', error);
+        }
+      };
+      
+      fetchVideoId();
+    }
+  }, [anime]);
+  
+  const handleWatchClick = () => {
+    if (videoId) {
+      setIsVideoOpen(true);
+    }
+  };
   
   if (isLoading) {
     return (
@@ -75,11 +98,20 @@ const AnimeDetail = () => {
       ? `${anime.runtime} min.` 
       : '';
   
+  const castMembers = anime.credits?.cast?.slice(0, 10) || [];
+  
   return (
     <div className="min-h-screen pb-16">
       <Navbar />
       
-      {/* Backdrop Image */}
+      {videoId && (
+        <VideoPlayer 
+          videoId={videoId} 
+          isOpen={isVideoOpen} 
+          onClose={() => setIsVideoOpen(false)} 
+        />
+      )}
+      
       <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden">
         <div className="absolute inset-0 bg-gray-100">
           {anime.backdrop_path && (
@@ -95,10 +127,8 @@ const AnimeDetail = () => {
         </div>
       </div>
       
-      {/* Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-10 -mt-20 md:-mt-32 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] lg:grid-cols-[300px_1fr] gap-8">
-          {/* Poster */}
           <div className="relative aspect-[2/3] w-full max-w-[250px] md:max-w-none mx-auto md:mx-0 rounded-lg overflow-hidden shadow-xl">
             <div className={cn(
               "absolute inset-0 bg-gray-100",
@@ -118,7 +148,6 @@ const AnimeDetail = () => {
             )}
           </div>
           
-          {/* Details */}
           <div className="animate-fade-in">
             <div className="flex flex-wrap items-center gap-3 mb-3">
               {anime.genres && anime.genres.slice(0, 3).map((genre) => (
@@ -171,13 +200,42 @@ const AnimeDetail = () => {
             </div>
             
             <div className="flex flex-wrap gap-4 mb-8">
-              <Button size="lg" className="rounded-full px-6">
+              <Button size="lg" className="rounded-full px-6" onClick={handleWatchClick}>
                 <Play size={18} className="mr-2" />
                 Watch
               </Button>
             </div>
             
             <Separator className="my-8" />
+            
+            {castMembers.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-xl font-semibold mb-4">Cast</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {castMembers.map((person) => (
+                    <div key={person.id} className="space-y-2 text-center">
+                      <div className="aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
+                        {person.profile_path ? (
+                          <img
+                            src={getImageUrl(person.profile_path, 'w300')}
+                            alt={person.name}
+                            className="w-full h-full object-cover object-top"
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center bg-gray-200">
+                            <User size={32} className="text-gray-400" />
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm line-clamp-1">{person.name}</p>
+                        <p className="text-xs text-gray-500 line-clamp-1">{person.character}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             
             {anime.seasons && anime.seasons.length > 0 && (
               <div className="mb-8">

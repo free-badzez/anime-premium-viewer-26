@@ -6,7 +6,8 @@ import {
   getTopRatedAnime,
   getAnimeDetails,
   searchAnime,
-  getRecentAnime
+  getRecentAnime,
+  getAnimeVideo
 } from "@/lib/api";
 
 export const useTrendingAnime = (timeWindow: 'day' | 'week' = 'week', page: number = 1) => {
@@ -42,6 +43,14 @@ export const useAnimeDetails = (id: number, mediaType?: string) => {
     queryKey: ['anime-details', id, mediaType],
     queryFn: () => getAnimeDetails(id, mediaType),
     enabled: !!id,
+  });
+};
+
+export const useAnimeVideo = (title: string) => {
+  return useQuery({
+    queryKey: ['anime-video', title],
+    queryFn: () => getAnimeVideo(title),
+    enabled: !!title,
   });
 };
 
