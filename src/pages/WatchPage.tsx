@@ -175,24 +175,7 @@ const WatchPage = () => {
                 </Button>}
               
               {/* Video controls overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                <div className="flex justify-between items-center">
-                  <div className="flex space-x-2">
-                    <Button variant="ghost" size="icon" onClick={togglePlay} className="text-white">
-                      {isPlaying ? <Pause size={20} /> : <Play size={20} />}
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={toggleMute} className="text-white">
-                      {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-                    </Button>
-                    <span className="text-white">00:00 / 24:37</span>
-                  </div>
-                  <div>
-                    <Button variant="ghost" size="icon" className="text-white">
-                      <Maximize size={20} />
-                    </Button>
-                  </div>
-                </div>
-              </div>
+              
             </div>
             
             {/* Current episode info */}
