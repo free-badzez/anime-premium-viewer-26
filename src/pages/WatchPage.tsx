@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
-import { useAnimeDetails } from '@/hooks/useAnime';
+import { useAnimeDetails, useAnimeVideo } from '@/hooks/useAnime';
 import { Play, Pause, Volume2, VolumeX, Maximize, ChevronLeft, List, ThumbsUp, ThumbsDown, Search, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -242,7 +242,7 @@ const WatchPage = () => {
               ) : (
                 <div className="h-full w-full">
                   <iframe 
-                    src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&showinfo=0&modestbranding=1&controls=1&disablekb=1&fs=1&iv_load_policy=3&loop=0&origin=${window.location.origin}&enablejsapi=1&widgetid=1&cc_load_policy=0&hl=en-US&cc_lang_pref=en-US&playsinline=1&annotations=0&color=white&hl=en&playlist=${currentVideoId}&rel=0&modestbranding=1&nologo=1&end=1`} 
+                    src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&showinfo=0&modestbranding=1&controls=1&disablekb=1&fs=1&iv_load_policy=3&loop=0&origin=${window.location.origin}&enablejsapi=1&widgetid=1&cc_load_policy=0&hl=en-US&cc_lang_pref=en-US&playsinline=1&annotations=0&color=white&hl=en&playlist=${currentVideoId}`} 
                     width="100%" 
                     height="100%" 
                     frameBorder="0" 
