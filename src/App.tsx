@@ -10,6 +10,8 @@ import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
 import WatchPage from "./pages/WatchPage";
 import TV from "./pages/TV";
+import Trending from "./pages/Trending";
+import TopRated from "./pages/TopRated";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +34,8 @@ const App = () => (
           <Route path="/watch/:id" element={<WatchPage />} />
           <Route path="/search" element={<Search />} />
           <Route path="/tv" element={<TV />} />
+          <Route path="/trending" element={<Trending />} />
+          <Route path="/top-rated" element={<TopRated />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
