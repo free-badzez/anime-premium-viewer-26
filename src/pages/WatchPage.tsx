@@ -172,7 +172,7 @@ const WatchPage = () => {
               </div>
             </div>
             
-            <div className="flex bg-gray-900 p-6">
+            <div className="flex p-6 bg-zinc-800">
               <div className="w-40 h-56 mr-6 flex-shrink-0">
                 {anime?.poster_path ? <img src={getImageUrl(anime.poster_path, 'w300')} alt={title} className="w-full h-full object-cover rounded" /> : <div className="w-full h-full bg-gray-800 rounded flex items-center justify-center">
                     <span>No Image</span>
