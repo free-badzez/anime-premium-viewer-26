@@ -120,7 +120,7 @@ const WatchPage = () => {
                 <div className="mb-6">
                   <h4 className="text-sm text-gray-400 mb-2">Season:</h4>
                   <div className="flex flex-wrap gap-2">
-                    {seasons.map(season => <Button key={season} variant={currentSeason === season ? "default" : "outline"} size="sm" onClick={() => handleSeasonChange(season)} className="text-slate-50">
+                    {seasons.map(season => <Button key={season} variant={currentSeason === season ? "default" : "outline"} size="sm" onClick={() => handleSeasonChange(season)} className="bg-[#e0a830] text-slate-950">
                         {season}
                       </Button>)}
                   </div>
