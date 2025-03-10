@@ -180,23 +180,29 @@ const WatchPage = () => {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-5 gap-2 h-[calc(100vh-220px)] overflow-y-auto pr-1 scrollbar-thin">
-                  {filteredEpisodes.map(episode => (
-                    <Button 
-                      key={episode} 
-                      variant={currentEpisode === episode ? "default" : "ghost"} 
-                      size="sm" 
-                      className={cn(
-                        "h-10 w-full aspect-square", 
-                        currentEpisode === episode 
-                          ? "bg-yellow-500 text-black hover:bg-yellow-600" 
-                          : "bg-gray-800 hover:bg-gray-700"
-                      )} 
-                      onClick={() => handleEpisodeClick(episode)}
-                    >
-                      {episode}
-                    </Button>
-                  ))}
+                <div className="h-[calc(100vh-220px)] pr-1">
+                  <div className="grid grid-cols-5 gap-2">
+                    {filteredEpisodes.map(episode => (
+                      <Button 
+                        key={episode} 
+                        variant={currentEpisode === episode ? "default" : "ghost"} 
+                        size="sm" 
+                        className={cn(
+                          "h-10 w-full relative group overflow-hidden",
+                          currentEpisode === episode 
+                            ? "bg-gradient-to-br from-yellow-500 to-amber-600 text-black hover:from-yellow-400 hover:to-amber-500 shadow-md shadow-yellow-500/20" 
+                            : "bg-gray-800/70 backdrop-blur-sm hover:bg-gray-700 border border-gray-700/50 transition-all duration-300"
+                        )} 
+                        onClick={() => handleEpisodeClick(episode)}
+                      >
+                        <span className="relative z-10">{episode}</span>
+                        {currentEpisode === episode && (
+                          <div className="absolute inset-0 bg-yellow-400/20 animate-pulse"></div>
+                        )}
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-yellow-500/20 to-transparent transition-opacity duration-300"></div>
+                      </Button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
