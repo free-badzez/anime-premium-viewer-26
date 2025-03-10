@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAnimeDetails, useAnimeVideo } from '@/hooks/useAnime';
 import { Play, Pause, Volume2, VolumeX, Maximize, ChevronLeft, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,8 +15,14 @@ const WatchPage = () => {
   } = useParams<{
     id: string;
   }>();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const episodeParam = queryParams.get('episode');
+  const seasonParam = queryParams.get('season');
+  
   const animeId = parseInt(id || '0');
-  const [currentEpisode, setCurrentEpisode] = useState(1);
+  const [currentEpisode, setCurrentEpisode] = useState(episodeParam ? parseInt(episodeParam) : 1);
+  const [currentSeason, setCurrentSeason] = useState(seasonParam ? parseInt(seasonParam) : 1);
   const [isMuted, setIsMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [showEpisodeList, setShowEpisodeList] = useState(true);
@@ -27,50 +33,72 @@ const WatchPage = () => {
     isLoading: isLoadingAnime
   } = useAnimeDetails(animeId);
   
-  // Episode-specific video IDs (mock data - in a real app these would come from an API)
+  // Episode-specific video IDs based on anime ID
   const episodeVideoIds = React.useMemo(() => {
-    const mockEpisodeIds = {
-      1: 'o9lAlo3abBw',
-      2: 'MGRm4IzK1SQ',
-      3: 'VQGCKyvzIM4',
-      4: 'pkKu9hLT-t8',
-      5: 'QczGoCmX-pI',
-      6: 'S8_YwFLCh4U',
-      7: 'dQw4w9WgXcQ',
-      8: 'o9lAlo3abBw',
-      9: 'MGRm4IzK1SQ',
-      10: 'VQGCKyvzIM4',
-    };
-    
-    // Generate random IDs for other episodes
-    const defaultVideoIds = [
+    // Video pool - different YouTube videos for different content
+    const videoPool = [
       'o9lAlo3abBw', 'MGRm4IzK1SQ', 'VQGCKyvzIM4', 
-      'pkKu9hLT-t8', 'QczGoCmX-pI', 'S8_YwFLCh4U'
+      'pkKu9hLT-t8', 'QczGoCmX-pI', 'S8_YwFLCh4U',
+      'dQw4w9WgXcQ', 'kJQP7kiw5Fk', '9bZkp7q19f0',
+      'JGwWNGJdvx8', 'pRpeEdMmmQ0', 'hT_nvWreIhg',
+      'fJ9rUzIMcZQ', '60ItHLz5WEA', 'YqeW9_5kURI',
+      'RgKAFK5djSk', '0KSOMA3QBU0', 'ktvTqknDobU',
+      'PT2_F-1esPk', 'papuvlVeZg8', '1G4isv_Fylg',
+      'YykjpeuMNEk', '2vjPBrBU-TM', 'rYEDA3JcQqw'
     ];
     
-    return Array.from({ length: 100 }, (_, i) => {
-      const episodeNum = i + 1;
-      return mockEpisodeIds[episodeNum] || 
-        defaultVideoIds[Math.floor(Math.random() * defaultVideoIds.length)];
-    });
-  }, []);
+    // Use anime ID to determine starting point in the pool
+    const startIndex = animeId % videoPool.length;
+    
+    // Generate unique IDs per episode and season
+    const videoMap = {};
+    
+    // For each season, generate episode videos
+    for (let s = 1; s <= 10; s++) {
+      videoMap[s] = {};
+      for (let e = 1; e <= 25; e++) {
+        // Create a "unique" index based on anime ID, season and episode
+        const videoIndex = (startIndex + (s * 5) + e) % videoPool.length;
+        videoMap[s][e] = videoPool[videoIndex];
+      }
+    }
+    
+    return videoMap;
+  }, [animeId]);
   
-  // Use the current episode's video ID
-  const currentVideoId = episodeVideoIds[currentEpisode - 1];
+  // Use the current episode's video ID for the current season
+  const currentVideoId = episodeVideoIds[currentSeason]?.[currentEpisode] || 'dQw4w9WgXcQ';
   const isLoading = isLoadingAnime;
   
   const title = anime?.name || anime?.title || 'Loading...';
   
-  // Generate dummy episode list
-  const totalEpisodes = anime?.number_of_episodes || 100;
+  // Generate episode list based on season
+  const totalEpisodes = currentSeason === 1 ? 
+    (anime?.number_of_episodes || 24) : 
+    Math.floor(10 + Math.random() * 15); // Random number of episodes for other seasons
+  
   const episodes = Array.from({
     length: totalEpisodes
   }, (_, i) => i + 1);
   
   const handleEpisodeClick = (episode: number) => {
     setCurrentEpisode(episode);
-    // In a real app, you would fetch the video for the specific episode
+    navigate(`/watch/${animeId}?season=${currentSeason}&episode=${episode}`);
   };
+  
+  const handleSeasonChange = (season: number) => {
+    setCurrentSeason(season);
+    setCurrentEpisode(1);
+    navigate(`/watch/${animeId}?season=${season}&episode=1`);
+  };
+  
+  // Get total seasons
+  const totalSeasons = anime?.seasons?.length || 
+    (anime?.number_of_seasons || Math.floor(1 + Math.random() * 4));
+  
+  const seasons = Array.from({
+    length: totalSeasons
+  }, (_, i) => i + 1);
   
   const toggleMute = () => setIsMuted(!isMuted);
   const togglePlay = () => setIsPlaying(!isPlaying);
@@ -110,6 +138,24 @@ const WatchPage = () => {
                   </Button>
                 </div>
                 
+                {/* Season selector */}
+                <div className="mb-6">
+                  <h4 className="text-sm text-gray-400 mb-2">Season:</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {seasons.map(season => (
+                      <Button 
+                        key={season}
+                        variant={currentSeason === season ? "default" : "outline"}
+                        size="sm"
+                        className={currentSeason === season ? "bg-yellow-500 text-black" : ""}
+                        onClick={() => handleSeasonChange(season)}
+                      >
+                        {season}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                
                 <div className="flex items-center space-x-2 mb-4">
                   <List size={16} />
                   <span>EPS: 001-{totalEpisodes}</span>
@@ -139,8 +185,8 @@ const WatchPage = () => {
           
           {/* Main content */}
           <div className="flex-1 flex flex-col">
-            {/* Video player */}
-            <div className="relative w-full aspect-video bg-black flex-1">
+            {/* Video player - SMALLER to show more content */}
+            <div className="relative w-full bg-black" style={{ height: "60vh" }}>
               {isLoading ? (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
@@ -174,8 +220,18 @@ const WatchPage = () => {
               )}
             </div>
             
+            {/* Current episode info */}
+            <div className="bg-gray-800 p-4">
+              <h2 className="text-xl font-bold">
+                {title} - Season {currentSeason}, Episode {currentEpisode}
+              </h2>
+              <p className="text-gray-400 mt-1">
+                {anime?.overview?.substring(0, 150)}...
+              </p>
+            </div>
+            
             {/* Anime info section */}
-            <div className="bg-gray-900 p-6">
+            <div className="bg-gray-900 p-6 overflow-y-auto flex-1">
               <div className="flex">
                 <div className="w-40 h-56 mr-6">
                   {anime?.poster_path ? (
@@ -209,7 +265,7 @@ const WatchPage = () => {
                     <div className="px-3 py-1 bg-gray-800 rounded text-sm">24m</div>
                   </div>
                   
-                  <p className="text-gray-300 mb-4 line-clamp-3">{anime?.overview}</p>
+                  <p className="text-gray-300 mb-4">{anime?.overview}</p>
                   
                   <div className="mb-4">
                     <h3 className="font-medium mb-2 text-yellow-400">Watching Episode {currentEpisode}:</h3>

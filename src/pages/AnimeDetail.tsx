@@ -26,7 +26,11 @@ const AnimeDetail = () => {
   }, [id]);
   
   const handleWatchClick = () => {
-    navigate(`/watch/${animeId}`);
+    navigate(`/watch/${animeId}?season=1&episode=1`);
+  };
+  
+  const handleSeasonClick = (seasonNumber: number) => {
+    navigate(`/watch/${animeId}?season=${seasonNumber}&episode=1`);
   };
   
   if (isLoading) {
@@ -214,7 +218,11 @@ const AnimeDetail = () => {
                 <h3 className="text-xl font-semibold mb-4">Seasons</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {anime.seasons.map((season) => (
-                    <div key={season.id} className="rounded-lg border bg-card shadow-sm hover-scale">
+                    <div 
+                      key={season.id} 
+                      className="rounded-lg border bg-card shadow-sm hover:scale-105 transition-transform cursor-pointer"
+                      onClick={() => handleSeasonClick(season.season_number)}
+                    >
                       <div className="aspect-video rounded-t-lg overflow-hidden">
                         <img
                           src={getImageUrl(season.poster_path, 'w300') || getImageUrl(anime.poster_path, 'w300')}
@@ -227,6 +235,13 @@ const AnimeDetail = () => {
                         <p className="text-xs text-gray-500 mt-1">
                           {season.episode_count} episodes
                         </p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-2 w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                        >
+                          <Play size={12} className="mr-1" /> Watch
+                        </Button>
                       </div>
                     </div>
                   ))}
