@@ -89,7 +89,7 @@ const WatchPage = () => {
         
         <div className="flex flex-1">
           {showEpisodeList && <div className="w-80 bg-gray-900 border-r border-gray-800">
-              <div className="p-4">
+              <div className="p-4 bg-neutral-950">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold">List of episodes:</h3>
                   <Button variant="ghost" size="sm" className="text-white" onClick={() => setShowEpisodeList(false)}>
