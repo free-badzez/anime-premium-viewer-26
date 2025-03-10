@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAnimeDetails, useAnimeVideo } from '@/hooks/useAnime';
@@ -9,7 +8,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getImageUrl } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
-
 const WatchPage = () => {
   const {
     id
@@ -20,7 +18,6 @@ const WatchPage = () => {
   const queryParams = new URLSearchParams(location.search);
   const episodeParam = queryParams.get('episode');
   const seasonParam = queryParams.get('season');
-  
   const animeId = parseInt(id || '0');
   const [currentEpisode, setCurrentEpisode] = useState(episodeParam ? parseInt(episodeParam) : 1);
   const [currentSeason, setCurrentSeason] = useState(seasonParam ? parseInt(seasonParam) : 1);
@@ -29,88 +26,64 @@ const WatchPage = () => {
   const [showEpisodeList, setShowEpisodeList] = useState(true);
   const [searchEpisode, setSearchEpisode] = useState('');
   const navigate = useNavigate();
-  
   const {
     data: anime,
     isLoading: isLoadingAnime
   } = useAnimeDetails(animeId);
-  
+
   // Episode-specific video IDs based on anime ID
   const episodeVideoIds = React.useMemo(() => {
     // Video pool - different YouTube videos for different content
-    const videoPool = [
-      'o9lAlo3abBw', 'MGRm4IzK1SQ', 'VQGCKyvzIM4', 
-      'pkKu9hLT-t8', 'QczGoCmX-pI', 'S8_YwFLCh4U',
-      'dQw4w9WgXcQ', 'kJQP7kiw5Fk', '9bZkp7q19f0',
-      'JGwWNGJdvx8', 'pRpeEdMmmQ0', 'hT_nvWreIhg',
-      'fJ9rUzIMcZQ', '60ItHLz5WEA', 'YqeW9_5kURI',
-      'RgKAFK5djSk', '0KSOMA3QBU0', 'ktvTqknDobU',
-      'PT2_F-1esPk', 'papuvlVeZg8', '1G4isv_Fylg',
-      'YykjpeuMNEk', '2vjPBrBU-TM', 'rYEDA3JcQqw'
-    ];
-    
+    const videoPool = ['o9lAlo3abBw', 'MGRm4IzK1SQ', 'VQGCKyvzIM4', 'pkKu9hLT-t8', 'QczGoCmX-pI', 'S8_YwFLCh4U', 'dQw4w9WgXcQ', 'kJQP7kiw5Fk', '9bZkp7q19f0', 'JGwWNGJdvx8', 'pRpeEdMmmQ0', 'hT_nvWreIhg', 'fJ9rUzIMcZQ', '60ItHLz5WEA', 'YqeW9_5kURI', 'RgKAFK5djSk', '0KSOMA3QBU0', 'ktvTqknDobU', 'PT2_F-1esPk', 'papuvlVeZg8', '1G4isv_Fylg', 'YykjpeuMNEk', '2vjPBrBU-TM', 'rYEDA3JcQqw'];
+
     // Use anime ID to determine starting point in the pool
     const startIndex = animeId % videoPool.length;
-    
+
     // Generate unique IDs per episode and season
     const videoMap = {};
-    
+
     // For each season, generate episode videos
     for (let s = 1; s <= 10; s++) {
       videoMap[s] = {};
       for (let e = 1; e <= 25; e++) {
         // Create a "unique" index based on anime ID, season and episode
-        const videoIndex = (startIndex + (s * 5) + e) % videoPool.length;
+        const videoIndex = (startIndex + s * 5 + e) % videoPool.length;
         videoMap[s][e] = videoPool[videoIndex];
       }
     }
-    
     return videoMap;
   }, [animeId]);
-  
+
   // Use the current episode's video ID for the current season
   const currentVideoId = episodeVideoIds[currentSeason]?.[currentEpisode] || 'dQw4w9WgXcQ';
   const isLoading = isLoadingAnime;
-  
   const title = anime?.name || anime?.title || 'Loading...';
-  
+
   // Generate episode list based on season
-  const totalEpisodes = currentSeason === 1 ? 
-    (anime?.number_of_episodes || 24) : 
-    Math.floor(10 + Math.random() * 15); // Random number of episodes for other seasons
-  
+  const totalEpisodes = currentSeason === 1 ? anime?.number_of_episodes || 24 : Math.floor(10 + Math.random() * 15); // Random number of episodes for other seasons
+
   const episodes = Array.from({
     length: totalEpisodes
   }, (_, i) => i + 1);
-  
-  const filteredEpisodes = searchEpisode 
-    ? episodes.filter(ep => ep.toString().includes(searchEpisode)) 
-    : episodes;
-  
+  const filteredEpisodes = searchEpisode ? episodes.filter(ep => ep.toString().includes(searchEpisode)) : episodes;
   const handleEpisodeClick = (episode: number) => {
     setCurrentEpisode(episode);
     navigate(`/watch/${animeId}?season=${currentSeason}&episode=${episode}`);
   };
-  
   const handleSeasonChange = (season: number) => {
     setCurrentSeason(season);
     setCurrentEpisode(1);
     navigate(`/watch/${animeId}?season=${season}&episode=1`);
   };
-  
+
   // Get total seasons
-  const totalSeasons = anime?.seasons?.length || 
-    (anime?.number_of_seasons || Math.floor(1 + Math.random() * 4));
-  
+  const totalSeasons = anime?.seasons?.length || anime?.number_of_seasons || Math.floor(1 + Math.random() * 4);
   const seasons = Array.from({
     length: totalSeasons
   }, (_, i) => i + 1);
-  
   const toggleMute = () => setIsMuted(!isMuted);
   const togglePlay = () => setIsPlaying(!isPlaying);
-  
-  return (
-    <div className="min-h-screen bg-black text-white">
+  return <div className="min-h-screen bg-black text-white">
       <div className="flex flex-col h-screen">
         {/* Header */}
         <div className="bg-gray-900 p-4">
@@ -134,8 +107,7 @@ const WatchPage = () => {
         
         <div className="flex flex-1">
           {/* Episode list sidebar */}
-          {showEpisodeList && (
-            <div className="w-80 bg-gray-900 border-r border-gray-800">
+          {showEpisodeList && <div className="w-80 bg-gray-900 border-r border-gray-800">
               <div className="p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold">List of episodes:</h3>
@@ -148,17 +120,9 @@ const WatchPage = () => {
                 <div className="mb-6">
                   <h4 className="text-sm text-gray-400 mb-2">Season:</h4>
                   <div className="flex flex-wrap gap-2">
-                    {seasons.map(season => (
-                      <Button 
-                        key={season}
-                        variant={currentSeason === season ? "default" : "outline"}
-                        size="sm"
-                        className={currentSeason === season ? "bg-yellow-500 text-black" : ""}
-                        onClick={() => handleSeasonChange(season)}
-                      >
+                    {seasons.map(season => <Button key={season} variant={currentSeason === season ? "default" : "outline"} size="sm" onClick={() => handleSeasonChange(season)} className="text-slate-50">
                         {season}
-                      </Button>
-                    ))}
+                      </Button>)}
                   </div>
                 </div>
                 
@@ -170,79 +134,45 @@ const WatchPage = () => {
                   
                   <div className="relative">
                     <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Episode #"
-                      value={searchEpisode}
-                      onChange={(e) => setSearchEpisode(e.target.value)}
-                      className="pl-8 py-1 text-sm bg-gray-800 rounded w-28 focus:outline-none focus:ring-1 focus:ring-yellow-500"
-                    />
+                    <input type="text" placeholder="Episode #" value={searchEpisode} onChange={e => setSearchEpisode(e.target.value)} className="pl-8 py-1 text-sm bg-gray-800 rounded w-28 focus:outline-none focus:ring-1 focus:ring-yellow-500" />
                   </div>
                 </div>
                 
                 <div className="h-[calc(100vh-220px)] pr-1">
                   <div className="grid grid-cols-5 gap-2">
-                    {filteredEpisodes.map(episode => (
-                      <Button 
-                        key={episode} 
-                        variant={currentEpisode === episode ? "default" : "ghost"} 
-                        size="sm" 
-                        className={cn(
-                          "h-10 w-full relative group overflow-hidden",
-                          currentEpisode === episode 
-                            ? "bg-gradient-to-br from-yellow-500 to-amber-600 text-black hover:from-yellow-400 hover:to-amber-500 shadow-md shadow-yellow-500/20" 
-                            : "bg-gray-800/70 backdrop-blur-sm hover:bg-gray-700 border border-gray-700/50 transition-all duration-300"
-                        )} 
-                        onClick={() => handleEpisodeClick(episode)}
-                      >
+                    {filteredEpisodes.map(episode => <Button key={episode} variant={currentEpisode === episode ? "default" : "ghost"} size="sm" className={cn("h-10 w-full relative group overflow-hidden", currentEpisode === episode ? "bg-gradient-to-br from-yellow-500 to-amber-600 text-black hover:from-yellow-400 hover:to-amber-500 shadow-md shadow-yellow-500/20" : "bg-gray-800/70 backdrop-blur-sm hover:bg-gray-700 border border-gray-700/50 transition-all duration-300")} onClick={() => handleEpisodeClick(episode)}>
                         <span className="relative z-10">{episode}</span>
-                        {currentEpisode === episode && (
-                          <div className="absolute inset-0 bg-yellow-400/20 animate-pulse"></div>
-                        )}
+                        {currentEpisode === episode && <div className="absolute inset-0 bg-yellow-400/20 animate-pulse"></div>}
                         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-yellow-500/20 to-transparent transition-opacity duration-300"></div>
-                      </Button>
-                    ))}
+                      </Button>)}
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            </div>}
           
           {/* Main content */}
           <div className="flex-1 flex flex-col">
             {/* Video player section */}
-            <div className="relative w-full bg-black" style={{ height: "65vh" }}>
-              {isLoading ? (
-                <div className="absolute inset-0 flex items-center justify-center">
+            <div className="relative w-full bg-black" style={{
+            height: "65vh"
+          }}>
+              {isLoading ? <div className="absolute inset-0 flex items-center justify-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
-                </div>
-              ) : (
-                <div className="h-full w-full">
-                  <iframe 
-                    src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&showinfo=0&modestbranding=1&controls=1&disablekb=1&fs=1&iv_load_policy=3&loop=0&origin=${window.location.origin}&enablejsapi=1&widgetid=1&cc_load_policy=0&hl=en-US&cc_lang_pref=en-US&playsinline=1&annotations=0&color=white&hl=en&playlist=${currentVideoId}`} 
-                    width="100%" 
-                    height="100%" 
-                    frameBorder="0" 
-                    allow="autoplay; fullscreen" 
-                    allowFullScreen 
-                    title="Anime Video Player"
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                  ></iframe>
-                </div>
-              )}
+                </div> : <div className="h-full w-full">
+                  <iframe src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&showinfo=0&modestbranding=1&controls=1&disablekb=1&fs=1&iv_load_policy=3&loop=0&origin=${window.location.origin}&enablejsapi=1&widgetid=1&cc_load_policy=0&hl=en-US&cc_lang_pref=en-US&playsinline=1&annotations=0&color=white&hl=en&playlist=${currentVideoId}`} width="100%" height="100%" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen title="Anime Video Player" style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%'
+              }}></iframe>
+                </div>}
               
               {/* Button to show episode list when hidden */}
-              {!showEpisodeList && (
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="absolute top-4 left-4 bg-black/50 text-white" 
-                  onClick={() => setShowEpisodeList(true)}
-                >
+              {!showEpisodeList && <Button variant="ghost" size="sm" className="absolute top-4 left-4 bg-black/50 text-white" onClick={() => setShowEpisodeList(true)}>
                   <List size={16} className="mr-2" />
                   <span>Show Episodes</span>
-                </Button>
-              )}
+                </Button>}
               
               {/* Video controls overlay */}
               <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
@@ -287,17 +217,9 @@ const WatchPage = () => {
             {/* Anime details section */}
             <div className="flex bg-gray-900 p-6">
               <div className="w-40 h-56 mr-6 flex-shrink-0">
-                {anime?.poster_path ? (
-                  <img 
-                    src={getImageUrl(anime.poster_path, 'w300')} 
-                    alt={title} 
-                    className="w-full h-full object-cover rounded" 
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-800 rounded flex items-center justify-center">
+                {anime?.poster_path ? <img src={getImageUrl(anime.poster_path, 'w300')} alt={title} className="w-full h-full object-cover rounded" /> : <div className="w-full h-full bg-gray-800 rounded flex items-center justify-center">
                     <span>No Image</span>
-                  </div>
-                )}
+                  </div>}
               </div>
               
               <div className="flex-1">
@@ -340,8 +262,6 @@ const WatchPage = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default WatchPage;
