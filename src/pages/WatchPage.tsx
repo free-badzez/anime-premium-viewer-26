@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getImageUrl } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+
 const WatchPage = () => {
   const {
     id
@@ -31,22 +32,16 @@ const WatchPage = () => {
     isLoading: isLoadingAnime
   } = useAnimeDetails(animeId);
 
-  // Episode-specific video IDs based on anime ID
   const episodeVideoIds = React.useMemo(() => {
-    // Video pool - different YouTube videos for different content
     const videoPool = ['o9lAlo3abBw', 'MGRm4IzK1SQ', 'VQGCKyvzIM4', 'pkKu9hLT-t8', 'QczGoCmX-pI', 'S8_YwFLCh4U', 'dQw4w9WgXcQ', 'kJQP7kiw5Fk', '9bZkp7q19f0', 'JGwWNGJdvx8', 'pRpeEdMmmQ0', 'hT_nvWreIhg', 'fJ9rUzIMcZQ', '60ItHLz5WEA', 'YqeW9_5kURI', 'RgKAFK5djSk', '0KSOMA3QBU0', 'ktvTqknDobU', 'PT2_F-1esPk', 'papuvlVeZg8', '1G4isv_Fylg', 'YykjpeuMNEk', '2vjPBrBU-TM', 'rYEDA3JcQqw'];
 
-    // Use anime ID to determine starting point in the pool
     const startIndex = animeId % videoPool.length;
 
-    // Generate unique IDs per episode and season
     const videoMap = {};
 
-    // For each season, generate episode videos
     for (let s = 1; s <= 10; s++) {
       videoMap[s] = {};
       for (let e = 1; e <= 25; e++) {
-        // Create a "unique" index based on anime ID, season and episode
         const videoIndex = (startIndex + s * 5 + e) % videoPool.length;
         videoMap[s][e] = videoPool[videoIndex];
       }
@@ -54,38 +49,37 @@ const WatchPage = () => {
     return videoMap;
   }, [animeId]);
 
-  // Use the current episode's video ID for the current season
   const currentVideoId = episodeVideoIds[currentSeason]?.[currentEpisode] || 'dQw4w9WgXcQ';
   const isLoading = isLoadingAnime;
   const title = anime?.name || anime?.title || 'Loading...';
 
-  // Generate episode list based on season
-  const totalEpisodes = currentSeason === 1 ? anime?.number_of_episodes || 24 : Math.floor(10 + Math.random() * 15); // Random number of episodes for other seasons
-
+  const totalEpisodes = currentSeason === 1 ? anime?.number_of_episodes || 24 : Math.floor(10 + Math.random() * 15);
   const episodes = Array.from({
     length: totalEpisodes
   }, (_, i) => i + 1);
   const filteredEpisodes = searchEpisode ? episodes.filter(ep => ep.toString().includes(searchEpisode)) : episodes;
+
   const handleEpisodeClick = (episode: number) => {
     setCurrentEpisode(episode);
     navigate(`/watch/${animeId}?season=${currentSeason}&episode=${episode}`);
   };
+
   const handleSeasonChange = (season: number) => {
     setCurrentSeason(season);
     setCurrentEpisode(1);
     navigate(`/watch/${animeId}?season=${season}&episode=1`);
   };
 
-  // Get total seasons
   const totalSeasons = anime?.seasons?.length || anime?.number_of_seasons || Math.floor(1 + Math.random() * 4);
   const seasons = Array.from({
     length: totalSeasons
   }, (_, i) => i + 1);
+
   const toggleMute = () => setIsMuted(!isMuted);
   const togglePlay = () => setIsPlaying(!isPlaying);
+
   return <div className="min-h-screen bg-black text-white">
       <div className="flex flex-col h-screen">
-        {/* Header */}
         <div className="bg-gray-900 p-4">
           <div className="flex items-center">
             <Button variant="ghost" size="sm" className="text-white mr-4" onClick={() => navigate(`/anime/${animeId}`)}>
@@ -106,7 +100,6 @@ const WatchPage = () => {
         </div>
         
         <div className="flex flex-1">
-          {/* Episode list sidebar */}
           {showEpisodeList && <div className="w-80 bg-gray-900 border-r border-gray-800">
               <div className="p-4">
                 <div className="flex items-center justify-between mb-4">
@@ -116,13 +109,27 @@ const WatchPage = () => {
                   </Button>
                 </div>
                 
-                {/* Season selector */}
                 <div className="mb-6">
                   <h4 className="text-sm text-gray-400 mb-2">Season:</h4>
                   <div className="flex flex-wrap gap-2">
-                    {seasons.map(season => <Button key={season} variant={currentSeason === season ? "default" : "outline"} size="sm" onClick={() => handleSeasonChange(season)} className="bg-[#e0a830] text-slate-950">
-                        {season}
-                      </Button>)}
+                    {seasons.map(season => (
+                      <Button 
+                        key={season} 
+                        variant={currentSeason === season ? "default" : "outline"} 
+                        size="sm" 
+                        onClick={() => handleSeasonChange(season)} 
+                        className={cn(
+                          "relative group overflow-hidden",
+                          currentSeason === season 
+                            ? "bg-gradient-to-br from-yellow-500 to-amber-600 text-black hover:from-yellow-400 hover:to-amber-500 shadow-md shadow-yellow-500/20" 
+                            : "bg-gray-800/70 backdrop-blur-sm hover:bg-gray-700 border border-gray-700/50 transition-all duration-300"
+                        )}
+                      >
+                        <span className="relative z-10">{season}</span>
+                        {currentSeason === season && <div className="absolute inset-0 bg-yellow-400/20 animate-pulse"></div>}
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-yellow-500/20 to-transparent transition-opacity duration-300"></div>
+                      </Button>
+                    ))}
                   </div>
                 </div>
                 
@@ -150,9 +157,7 @@ const WatchPage = () => {
               </div>
             </div>}
           
-          {/* Main content */}
           <div className="flex-1 flex flex-col">
-            {/* Video player section */}
             <div className="relative w-full bg-black" style={{
             height: "65vh"
           }}>
@@ -168,17 +173,12 @@ const WatchPage = () => {
               }}></iframe>
                 </div>}
               
-              {/* Button to show episode list when hidden */}
               {!showEpisodeList && <Button variant="ghost" size="sm" className="absolute top-4 left-4 bg-black/50 text-white" onClick={() => setShowEpisodeList(true)}>
                   <List size={16} className="mr-2" />
                   <span>Show Episodes</span>
                 </Button>}
-              
-              {/* Video controls overlay */}
-              
             </div>
             
-            {/* Current episode info */}
             <div className="bg-gray-800 p-4">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold">
@@ -197,7 +197,6 @@ const WatchPage = () => {
               </div>
             </div>
             
-            {/* Anime details section */}
             <div className="flex bg-gray-900 p-6">
               <div className="w-40 h-56 mr-6 flex-shrink-0">
                 {anime?.poster_path ? <img src={getImageUrl(anime.poster_path, 'w300')} alt={title} className="w-full h-full object-cover rounded" /> : <div className="w-full h-full bg-gray-800 rounded flex items-center justify-center">
@@ -247,4 +246,5 @@ const WatchPage = () => {
       </div>
     </div>;
 };
+
 export default WatchPage;
