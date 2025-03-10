@@ -154,7 +154,7 @@ const WatchPage = () => {
                 </Button>}
             </div>
             
-            <div className="bg-gray-800 p-4">
+            <div className="p-4 bg-neutral-900">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold">
                   {title} - S{currentSeason} E{currentEpisode}
