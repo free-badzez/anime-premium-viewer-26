@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
-import { useAnimeDetails } from '@/hooks/useAnime';
+import { useAnimeDetails, useAnimeVideo } from '@/hooks/useAnime';
 import { Play, Pause, Volume2, VolumeX, Maximize, ChevronLeft, List, ThumbsUp, ThumbsDown, Search, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -9,7 +10,6 @@ import { getImageUrl } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import { getAnimeVideo } from '@/lib/api/details';
 
 const WatchPage = () => {
   const { id } = useParams<{ id: string; }>();
@@ -25,33 +25,46 @@ const WatchPage = () => {
   const [showEpisodeList, setShowEpisodeList] = useState(true);
   const [searchEpisode, setSearchEpisode] = useState('');
   const [currentEpisodePage, setCurrentEpisodePage] = useState(1);
-  const [currentVideoId, setCurrentVideoId] = useState('');
   const episodesPerPage = 30;
 
   const navigate = useNavigate();
   
   const { data: anime, isLoading: isLoadingAnime } = useAnimeDetails(animeId);
   
-  useEffect(() => {
-    const fetchVideo = async () => {
-      if (anime && anime.name) {
-        const videoId = await getAnimeVideo(
-          animeId,
-          anime.name || anime.title || '',
-          currentSeason,
-          currentEpisode
-        );
-        setCurrentVideoId(videoId);
+  // Generate season-specific episode counts - this ensures proper episode count per season
+  const getEpisodeCountForSeason = (seasonNumber: number) => {
+    if (anime?.seasons && anime.seasons.length > 0) {
+      const season = anime.seasons.find(s => s.season_number === seasonNumber);
+      if (season) {
+        return season.episode_count;
       }
+    }
+    
+    // Fallback episode counts if not found in anime data
+    const fallbackCounts: Record<number, number> = {
+      1: anime?.number_of_episodes || 24,
+      2: 12,
+      3: 24,
+      4: 12,
+      5: 25
     };
     
-    fetchVideo();
-  }, [anime, animeId, currentSeason, currentEpisode]);
+    return fallbackCounts[seasonNumber] || 12; // Default to 12 episodes
+  };
   
-  const isLoading = isLoadingAnime || !currentVideoId;
-  const title = anime?.name || anime?.title || 'Loading...';
-  const totalEpisodes = currentSeason === 1 ? anime?.number_of_episodes || 24 : Math.floor(10 + Math.random() * 115);
+  const totalEpisodes = getEpisodeCountForSeason(currentSeason);
   const episodes = Array.from({ length: totalEpisodes }, (_, i) => i + 1);
+  
+  // Use the hook to get the video ID
+  const { data: videoId, isLoading: isLoadingVideo } = useAnimeVideo(
+    animeId,
+    anime?.name || anime?.title || '',
+    currentSeason,
+    currentEpisode
+  );
+  
+  const isLoading = isLoadingAnime || isLoadingVideo || !videoId;
+  const title = anime?.name || anime?.title || 'Loading...';
   
   const filteredEpisodes = searchEpisode ? 
     episodes.filter(ep => ep.toString().includes(searchEpisode)) : 
@@ -70,8 +83,9 @@ const WatchPage = () => {
 
   const handleSeasonChange = (season: number) => {
     setCurrentSeason(season);
-    setCurrentEpisode(1);
-    setCurrentEpisodePage(1);
+    setCurrentEpisode(1); // Reset to first episode when changing season
+    setCurrentEpisodePage(1); // Reset pagination
+    setSearchEpisode(''); // Clear search when changing season
     navigate(`/watch/${animeId}?season=${season}&episode=1`);
   };
 
@@ -91,6 +105,11 @@ const WatchPage = () => {
       setCurrentEpisodePage(pageIndex || 1);
     }
   }, [currentEpisode, episodesPerPage]);
+
+  // Reset episode page when season changes to ensure we're showing the correct episodes
+  useEffect(() => {
+    setCurrentEpisodePage(1);
+  }, [currentSeason]);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -245,7 +264,7 @@ const WatchPage = () => {
               ) : (
                 <div className="h-full w-full">
                   <iframe 
-                    src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&showinfo=0&modestbranding=1&controls=1&disablekb=1&fs=1&iv_load_policy=3&loop=0&origin=${window.location.origin}&enablejsapi=1&widgetid=1&cc_load_policy=0&hl=en-US&cc_lang_pref=en-US&playsinline=1&annotations=0&color=white&hl=en&playlist=${currentVideoId}&nologo=1`} 
+                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&showinfo=0&modestbranding=1&controls=1&disablekb=1&fs=1&iv_load_policy=3&loop=0&origin=${window.location.origin}&enablejsapi=1&widgetid=1&cc_load_policy=0&hl=en-US&cc_lang_pref=en-US&playsinline=1&annotations=0&color=white&hl=en&playlist=${videoId}&nologo=1`} 
                     width="100%" 
                     height="100%" 
                     frameBorder="0" 
