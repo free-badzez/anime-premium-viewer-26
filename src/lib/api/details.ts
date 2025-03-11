@@ -86,7 +86,7 @@ export const getAnimeVideo = async (
     "31910_1_1": "QczGoCmX-pI", // Season 1, Episode 1
     
     // One Piece
-    "37854_3_1": "S8_YwFLCh4U", // Season 3, Episode 1 (Changed from 37854_1_1 to avoid duplicate)
+    "37854_3_1": "S8_YwFLCh4U", // Season 3, Episode 1
   };
   
   // Create a key to look up in our mapping
@@ -113,7 +113,7 @@ export const getAnimeVideo = async (
   } else if (lowerTitle.includes('one piece')) {
     videoId = 'S8_YwFLCh4U'; // One Piece trailer
   } else {
-    // Default anime collection video - used to be Rick Roll, changed to anime collection
+    // Default anime collection video
     videoId = 'o9lAlo3abBw';
   }
   
