@@ -172,6 +172,45 @@ const HeroSection = ({ animes = [] }: HeroSectionProps) => {
           ))}
         </div>
       </div>
+      
+      {/* Featured Anime Thumbnails */}
+      <div className="absolute bottom-14 left-0 right-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10">
+          <div className="flex space-x-3 overflow-x-auto pb-2 scrollbar-hide">
+            {animes.slice(0, 5).map((anime, index) => (
+              <button
+                key={anime.id}
+                onClick={() => {
+                  setIsTransitioning(true);
+                  setTimeout(() => {
+                    setCurrentIndex(index);
+                    setImageLoaded(false);
+                    setTimeout(() => {
+                      setIsTransitioning(false);
+                    }, 100);
+                  }, 500);
+                }}
+                className={cn(
+                  "relative min-w-[120px] h-[67px] rounded-md overflow-hidden transition-all",
+                  currentIndex === index 
+                    ? "border-2 border-white transform scale-105" 
+                    : "border border-white/30 opacity-70 hover:opacity-100"
+                )}
+              >
+                <img 
+                  src={getImageUrl(anime.backdrop_path, 'w300')} 
+                  alt={anime.title || anime.name || ''} 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/30" />
+                <div className="absolute bottom-1 left-1 right-1 text-white text-xs font-medium truncate">
+                  {anime.title || anime.name || ''}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
