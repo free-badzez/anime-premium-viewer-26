@@ -1,4 +1,3 @@
-
 import { Anime, AnimeDetail, TMDBResponse } from "@/types/anime";
 import { fetchFromTMDB, ANIME_TYPE_ID } from "./core";
 
@@ -57,16 +56,47 @@ export const searchAnime = async (query: string, page: number = 1) => {
 };
 
 // Get YouTube video ID for an anime
-export const getAnimeVideo = async (title: string, specificVideoId?: string): Promise<string> => {
-  // If a specific video ID is provided, use it directly
-  if (specificVideoId) {
-    return specificVideoId;
+export const getAnimeVideo = async (
+  animeId: number,
+  title: string,
+  season: number = 1,
+  episode: number = 1
+): Promise<string> => {
+  // This function now takes animeId, title, season, and episode parameters
+  
+  // In a real implementation, you would fetch the specific video ID from a database
+  // based on the anime ID, season, and episode
+  
+  // Custom video mapping for specific anime/season/episode combinations
+  const videoMapping: Record<string, string> = {
+    // Attack on Titan
+    "37854_1_1": "MGRm4IzK1SQ", // Season 1, Episode 1
+    "37854_1_2": "CeLvF-KjHfU", // Season 1, Episode 2
+    "37854_2_1": "hj3C12fPbqU", // Season 2, Episode 1
+    
+    // Demon Slayer
+    "85937_1_1": "VQGCKyvzIM4", // Season 1, Episode 1
+    "85937_1_2": "6vMuWuWlW4I", // Season 1, Episode 2
+    
+    // Jujutsu Kaisen
+    "94605_1_1": "pkKu9hLT-t8", // Season 1, Episode 1
+    
+    // Naruto
+    "31910_1_1": "QczGoCmX-pI", // Season 1, Episode 1
+    
+    // One Piece
+    "37854_1_1": "S8_YwFLCh4U", // Season 1, Episode 1
+  };
+  
+  // Create a key to look up in our mapping
+  const lookupKey = `${animeId}_${season}_${episode}`;
+  
+  // If we have a specific video for this anime/season/episode combination, return it
+  if (videoMapping[lookupKey]) {
+    return videoMapping[lookupKey];
   }
   
-  // This is a mock function that would typically call a real API
-  // For now, we'll just return a hardcoded YouTube video ID based on the title
-  
-  // Default video ID (Anime trailer)
+  // Otherwise, fall back to general title-based mapping
   let videoId = 'o9lAlo3abBw'; // Default anime trailer
   
   // Check for common titles and assign specific videos
@@ -82,8 +112,8 @@ export const getAnimeVideo = async (title: string, specificVideoId?: string): Pr
   } else if (lowerTitle.includes('one piece')) {
     videoId = 'S8_YwFLCh4U'; // One Piece trailer
   } else {
-    // Default anime collection video
-    videoId = 'dQw4w9WgXcQ';
+    // Default anime collection video - used to be Rick Roll, changed to anime collection
+    videoId = 'o9lAlo3abBw';
   }
   
   return videoId;

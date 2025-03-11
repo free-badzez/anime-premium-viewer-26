@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
-import { useAnimeDetails, useAnimeVideo } from '@/hooks/useAnime';
+import { useAnimeDetails } from '@/hooks/useAnime';
 import { Play, Pause, Volume2, VolumeX, Maximize, ChevronLeft, List, ThumbsUp, ThumbsDown, Search, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -9,6 +9,7 @@ import { getImageUrl } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { getAnimeVideo } from '@/lib/api/details';
 
 const WatchPage = () => {
   const { id } = useParams<{ id: string; }>();
@@ -24,28 +25,30 @@ const WatchPage = () => {
   const [showEpisodeList, setShowEpisodeList] = useState(true);
   const [searchEpisode, setSearchEpisode] = useState('');
   const [currentEpisodePage, setCurrentEpisodePage] = useState(1);
+  const [currentVideoId, setCurrentVideoId] = useState('');
   const episodesPerPage = 30;
 
   const navigate = useNavigate();
   
   const { data: anime, isLoading: isLoadingAnime } = useAnimeDetails(animeId);
   
-  const episodeVideoIds = React.useMemo(() => {
-    const videoPool = ['o9lAlo3abBw', 'MGRm4IzK1SQ', 'VQGCKyvzIM4', 'pkKu9hLT-t8', 'QczGoCmX-pI', 'S8_YwFLCh4U', 'dQw4w9WgXcQ', 'kJQP7kiw5Fk', '9bZkp7q19f0', 'JGwWNGJdvx8', 'pRpeEdMmmQ0', 'hT_nvWreIhg', 'fJ9rUzIMcZQ', '60ItHLz5WEA', 'YqeW9_5kURI', 'RgKAFK5djSk', '0KSOMA3QBU0', 'ktvTqknDobU', 'PT2_F-1esPk', 'papuvlVeZg8', '1G4isv_Fylg', 'YykjpeuMNEk', '2vjPBrBU-TM', 'rYEDA3JcQqw'];
-    const startIndex = animeId % videoPool.length;
-    const videoMap = {};
-    for (let s = 1; s <= 10; s++) {
-      videoMap[s] = {};
-      for (let e = 1; e <= 25; e++) {
-        const videoIndex = (startIndex + s * 5 + e) % videoPool.length;
-        videoMap[s][e] = videoPool[videoIndex];
+  useEffect(() => {
+    const fetchVideo = async () => {
+      if (anime && anime.name) {
+        const videoId = await getAnimeVideo(
+          animeId,
+          anime.name || anime.title || '',
+          currentSeason,
+          currentEpisode
+        );
+        setCurrentVideoId(videoId);
       }
-    }
-    return videoMap;
-  }, [animeId]);
+    };
+    
+    fetchVideo();
+  }, [anime, animeId, currentSeason, currentEpisode]);
   
-  const currentVideoId = episodeVideoIds[currentSeason]?.[currentEpisode] || 'dQw4w9WgXcQ';
-  const isLoading = isLoadingAnime;
+  const isLoading = isLoadingAnime || !currentVideoId;
   const title = anime?.name || anime?.title || 'Loading...';
   const totalEpisodes = currentSeason === 1 ? anime?.number_of_episodes || 24 : Math.floor(10 + Math.random() * 115);
   const episodes = Array.from({ length: totalEpisodes }, (_, i) => i + 1);
@@ -242,7 +245,7 @@ const WatchPage = () => {
               ) : (
                 <div className="h-full w-full">
                   <iframe 
-                    src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&showinfo=0&modestbranding=1&controls=1&disablekb=1&fs=1&iv_load_policy=3&loop=0&origin=${window.location.origin}&enablejsapi=1&widgetid=1&cc_load_policy=0&hl=en-US&cc_lang_pref=en-US&playsinline=1&annotations=0&color=white&hl=en&playlist=${currentVideoId}`} 
+                    src={`https://www.youtube.com/embed/${currentVideoId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&showinfo=0&modestbranding=1&controls=1&disablekb=1&fs=1&iv_load_policy=3&loop=0&origin=${window.location.origin}&enablejsapi=1&widgetid=1&cc_load_policy=0&hl=en-US&cc_lang_pref=en-US&playsinline=1&annotations=0&color=white&hl=en&playlist=${currentVideoId}&nologo=1`} 
                     width="100%" 
                     height="100%" 
                     frameBorder="0" 
