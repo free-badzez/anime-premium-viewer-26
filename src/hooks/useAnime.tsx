@@ -45,11 +45,11 @@ export const useAnimeDetails = (id: number, mediaType?: string) => {
   });
 };
 
-export const useAnimeVideo = (title: string, specificVideoId?: string) => {
+export const useAnimeVideo = (animeId: number, title: string, season: number = 1, episode: number = 1) => {
   return useQuery({
-    queryKey: ['anime-video', title, specificVideoId],
-    queryFn: () => getAnimeVideo(title, specificVideoId),
-    enabled: !!title,
+    queryKey: ['anime-video', animeId, title, season, episode],
+    queryFn: () => getAnimeVideo(animeId, title, season, episode),
+    enabled: !!animeId && !!title,
   });
 };
 

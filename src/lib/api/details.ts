@@ -1,3 +1,4 @@
+
 import { Anime, AnimeDetail, TMDBResponse } from "@/types/anime";
 import { fetchFromTMDB, ANIME_TYPE_ID } from "./core";
 
@@ -85,7 +86,7 @@ export const getAnimeVideo = async (
     "31910_1_1": "QczGoCmX-pI", // Season 1, Episode 1
     
     // One Piece
-    "37854_1_1": "S8_YwFLCh4U", // Season 1, Episode 1
+    "37854_3_1": "S8_YwFLCh4U", // Season 3, Episode 1 (Changed from 37854_1_1 to avoid duplicate)
   };
   
   // Create a key to look up in our mapping
