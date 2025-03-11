@@ -17,7 +17,7 @@ const Index = () => {
       
       {/* Hero Section - Using more trending anime for rotation */}
       <section className="w-full">
-        <HeroSection animes={trendingData?.results?.slice(0, 10) || []} />
+        <HeroSection animes={trendingData?.results?.slice(0, 15) || []} />
       </section>
       
       {/* Main Content */}

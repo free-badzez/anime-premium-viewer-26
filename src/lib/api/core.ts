@@ -52,7 +52,22 @@ export const POPULAR_ANIME_TITLES = [
   "Your Name",
   "Spirited Away",
   "Cowboy Bebop",
-  "Neon Genesis Evangelion"
+  "Neon Genesis Evangelion",
+  "Death Note",
+  "Jujutsu Kaisen",
+  "Chainsaw Man",
+  "Solo Leveling",
+  "Bleach",
+  "Hunter x Hunter",
+  "Dragon Ball Z",
+  "One Punch Man",
+  "Tokyo Ghoul",
+  "Violet Evergarden",
+  "Sword Art Online",
+  "Black Clover",
+  "Mob Psycho 100",
+  "The Promised Neverland",
+  "Vinland Saga"
 ];
 
 export {
