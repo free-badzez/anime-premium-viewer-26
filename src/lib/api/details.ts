@@ -66,76 +66,73 @@ const animeVideoMapping: Record<string, Record<number, Record<number, VideoSourc
   // Attack on Titan (ID: 1429)
   "1429": {
     1: { // Season 1
-      1: { id: "MGRm4IzK1SQ", isDrive: false }, // Episode 1 (YouTube)
-      2: { id: "CeLvF-KjHfU", isDrive: false }, // Episode 2 (YouTube)
-      3: { id: "QeeRmpIZmfc", isDrive: false }, // Episode 3 (YouTube)
-      4: { id: "wyRVZ5jYsqg", isDrive: false }, // Episode 4 (YouTube)
-      5: { id: "rNMT5CxCdgE", isDrive: false }, // Episode 5 (YouTube)
-      // Add your Google Drive links like this:
-      6: { id: "YOUR_GOOGLE_DRIVE_ID_HERE", isDrive: true }, // Episode 6 (Google Drive)
-      7: { id: "JSYZipKPCcU", isDrive: false }, // Episode 7 (YouTube)
-      8: { id: "ZvXo5_L5FsA", isDrive: false }, // Episode 8 (YouTube)
-      9: { id: "TtVXFBLYuJ8", isDrive: false }, // Episode 9 (YouTube)
-      10: { id: "2ZUcrlzYsNE", isDrive: false }  // Episode 10 (YouTube)
+      1: { id: "DRIVE_ID_FOR_AOT_S1E1", isDrive: true }, // Episode 1 (Drive)
+      2: { id: "DRIVE_ID_FOR_AOT_S1E2", isDrive: true }, // Episode 2 (Drive)
+      3: { id: "DRIVE_ID_FOR_AOT_S1E3", isDrive: true }, // Episode 3 (Drive)
+      4: { id: "DRIVE_ID_FOR_AOT_S1E4", isDrive: true }, // Episode 4 (Drive)
+      5: { id: "DRIVE_ID_FOR_AOT_S1E5", isDrive: true }, // Episode 5 (Drive)
+      6: { id: "DRIVE_ID_FOR_AOT_S1E6", isDrive: true }, // Episode 6 (Drive)
+      7: { id: "DRIVE_ID_FOR_AOT_S1E7", isDrive: true }, // Episode 7 (Drive)
+      8: { id: "DRIVE_ID_FOR_AOT_S1E8", isDrive: true }, // Episode 8 (Drive)
+      9: { id: "DRIVE_ID_FOR_AOT_S1E9", isDrive: true }, // Episode 9 (Drive)
+      10: { id: "DRIVE_ID_FOR_AOT_S1E10", isDrive: true } // Episode 10 (Drive)
     },
     2: { // Season 2
-      1: { id: "hj3C12fPbqU", isDrive: false }, // Episode 1 (YouTube)
-      2: { id: "X-Y3xX8MQtI", isDrive: false }, // Episode 2 (YouTube)
-      3: { id: "1eknfZGuvFo", isDrive: false }, // Episode 3 (YouTube)
-      4: { id: "0cKNHzWeq5Y", isDrive: false }, // Episode 4 (YouTube)
-      5: { id: "o5AIbc9j_w0", isDrive: false }  // Episode 5 (YouTube)
+      1: { id: "DRIVE_ID_FOR_AOT_S2E1", isDrive: true }, // Episode 1 (Drive)
+      2: { id: "DRIVE_ID_FOR_AOT_S2E2", isDrive: true }, // Episode 2 (Drive)
+      3: { id: "DRIVE_ID_FOR_AOT_S2E3", isDrive: true }, // Episode 3 (Drive)
+      4: { id: "DRIVE_ID_FOR_AOT_S2E4", isDrive: true }, // Episode 4 (Drive)
+      5: { id: "DRIVE_ID_FOR_AOT_S2E5", isDrive: true }  // Episode 5 (Drive)
     }
   },
   
   // Demon Slayer (ID: 85937)
   "85937": {
     1: { // Season 1
-      1: { id: "VQGCKyvzIM4", isDrive: false }, // Episode 1 (YouTube)
-      2: { id: "6vMuWuWlW4I", isDrive: false }, // Episode 2 (YouTube)
-      3: { id: "LKFuXETZusI", isDrive: false }, // Episode 3 (YouTube)
-      4: { id: "jQZd3GoKpjM", isDrive: false }, // Episode 4 (YouTube)
-      5: { id: "E5GkKx0hQzE", isDrive: false }  // Episode 5 (YouTube)
+      1: { id: "DRIVE_ID_FOR_DS_S1E1", isDrive: true }, // Episode 1 (Drive)
+      2: { id: "DRIVE_ID_FOR_DS_S1E2", isDrive: true }, // Episode 2 (Drive)
+      3: { id: "DRIVE_ID_FOR_DS_S1E3", isDrive: true }, // Episode 3 (Drive)
+      4: { id: "DRIVE_ID_FOR_DS_S1E4", isDrive: true }, // Episode 4 (Drive)
+      5: { id: "DRIVE_ID_FOR_DS_S1E5", isDrive: true }  // Episode 5 (Drive)
     }
   },
   
   // Jujutsu Kaisen (ID: 94605)
   "94605": {
     1: { // Season 1
-      1: { id: "pkKu9hLT-t8", isDrive: false }, // Episode 1 (YouTube)
-      2: { id: "KNfhJGBFFPY", isDrive: false }, // Episode 2 (YouTube)
-      3: { id: "3fh4wFJJIzE", isDrive: false }, // Episode 3 (YouTube)
-      // Add more episodes with YouTube or Drive links
+      1: { id: "DRIVE_ID_FOR_JJK_S1E1", isDrive: true }, // Episode 1 (Drive)
+      2: { id: "DRIVE_ID_FOR_JJK_S1E2", isDrive: true }, // Episode 2 (Drive)
+      3: { id: "DRIVE_ID_FOR_JJK_S1E3", isDrive: true }, // Episode 3 (Drive)
     }
   },
   
-  // You can add more anime with both YouTube and Google Drive links here
-  // Add your custom anime with Google Drive links like this:
+  // Add more anime with Drive links here
+  // For example:
   "1297763": { // Custom anime ID
     1: { // Season 1
-      1: { id: "REPLACE_WITH_DRIVE_ID", isDrive: true }, // Episode 1 (Google Drive)
-      2: { id: "REPLACE_WITH_DRIVE_ID", isDrive: true }, // Episode 2 (Google Drive)
-      3: { id: "REPLACE_WITH_DRIVE_ID", isDrive: true }  // Episode 3 (Google Drive)
+      1: { id: "DRIVE_ID_FOR_CUSTOM_S1E1", isDrive: true }, // Episode 1 (Drive)
+      2: { id: "DRIVE_ID_FOR_CUSTOM_S1E2", isDrive: true }, // Episode 2 (Drive)
+      3: { id: "DRIVE_ID_FOR_CUSTOM_S1E3", isDrive: true }  // Episode 3 (Drive)
     }
   }
 };
 
 // Fallback videos by anime title (used when specific episode is not found)
 const fallbackVideosByTitle: Record<string, VideoSource> = {
-  "Attack on Titan": { id: "MGRm4IzK1SQ", isDrive: false },
-  "Shingeki no Kyojin": { id: "MGRm4IzK1SQ", isDrive: false },
-  "Demon Slayer": { id: "VQGCKyvzIM4", isDrive: false },
-  "Kimetsu no Yaiba": { id: "VQGCKyvzIM4", isDrive: false },
-  // Add more fallbacks with YouTube or Drive links
-  "Your Custom Anime": { id: "YOUR_DRIVE_ID_HERE", isDrive: true } // Example with Google Drive
+  "Attack on Titan": { id: "DRIVE_ID_FOR_AOT_FALLBACK", isDrive: true },
+  "Shingeki no Kyojin": { id: "DRIVE_ID_FOR_AOT_FALLBACK", isDrive: true },
+  "Demon Slayer": { id: "DRIVE_ID_FOR_DS_FALLBACK", isDrive: true },
+  "Kimetsu no Yaiba": { id: "DRIVE_ID_FOR_DS_FALLBACK", isDrive: true },
+  "Your Custom Anime": { id: "DRIVE_ID_FOR_CUSTOM_FALLBACK", isDrive: true }
 };
 
 // Default videos when no match is found
 const defaultVideos: VideoSource[] = [
-  { id: "o9lAlo3abBw", isDrive: false }, // General anime compilation
-  { id: "p51w1XgZUCw", isDrive: false }, // Top anime moments
-  { id: "YOfevzRrNh4", isDrive: false }, // Another anime compilation
-  { id: "SlNpRThS9t8", isDrive: false }, // Popular anime opening
-  { id: "VQGCKyvzIM4", isDrive: false }  // Another popular anime opening
+  { id: "DRIVE_ID_FOR_DEFAULT_1", isDrive: true },
+  { id: "DRIVE_ID_FOR_DEFAULT_2", isDrive: true },
+  { id: "DRIVE_ID_FOR_DEFAULT_3", isDrive: true },
+  { id: "DRIVE_ID_FOR_DEFAULT_4", isDrive: true },
+  { id: "DRIVE_ID_FOR_DEFAULT_5", isDrive: true }
 ];
 
 // Get YouTube or Google Drive video ID for an anime
