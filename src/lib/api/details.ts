@@ -65,20 +65,33 @@ const animeVideoMapping: Record<string, Record<number, Record<number, string>>> 
       2: "CeLvF-KjHfU", // Episode 2
       3: "QeeRmpIZmfc", // Episode 3
       4: "wyRVZ5jYsqg", // Episode 4
-      5: "rNMT5CxCdgE"  // Episode 5
+      5: "rNMT5CxCdgE", // Episode 5
+      6: "yyN-1NYefc0", // Episode 6
+      7: "JSYZipKPCcU", // Episode 7
+      8: "ZvXo5_L5FsA", // Episode 8
+      9: "TtVXFBLYuJ8", // Episode 9
+      10: "2ZUcrlzYsNE" // Episode 10
     },
     2: { // Season 2
       1: "hj3C12fPbqU", // Episode 1
       2: "X-Y3xX8MQtI", // Episode 2
-      3: "1eknfZGuvFo"  // Episode 3
+      3: "1eknfZGuvFo", // Episode 3
+      4: "0cKNHzWeq5Y", // Episode 4
+      5: "o5AIbc9j_w0"  // Episode 5
     },
     3: { // Season 3
       1: "S8_YwFLCh4U", // Episode 1
-      2: "KSBVN92oMnM"  // Episode 2
+      2: "KSBVN92oMnM", // Episode 2
+      3: "h0LCi2S0UVE", // Episode 3
+      4: "5LoEgXvnrpo", // Episode 4
+      5: "swHsz8l5GxY"  // Episode 5
     },
     4: { // Season 4
       1: "SlNpRThS9t8", // Episode 1
-      2: "ZefrVAetxlI"  // Episode 2
+      2: "ZefrVAetxlI", // Episode 2
+      3: "LYTlC5VrQgw", // Episode 3
+      4: "DsU3dGRjOWo", // Episode 4
+      5: "LJHv1rl_H5g"  // Episode 5
     }
   },
   
@@ -88,12 +101,27 @@ const animeVideoMapping: Record<string, Record<number, Record<number, string>>> 
       1: "VQGCKyvzIM4", // Episode 1
       2: "6vMuWuWlW4I", // Episode 2
       3: "LKFuXETZusI", // Episode 3
-      4: "jQZd3GoKPjM", // Episode 4
-      5: "E5GkKx0hQzE"  // Episode 5
+      4: "jQZd3GoKpjM", // Episode 4
+      5: "E5GkKx0hQzE", // Episode 5
+      6: "FsS7XPhXYbw", // Episode 6
+      7: "JuCEmQAIOrI", // Episode 7
+      8: "T5j1_ZSUyuQ", // Episode 8
+      9: "qCGGaZ1GdVU", // Episode 9
+      10: "i8LQ8C6vZHk" // Episode 10
     },
     2: { // Season 2
       1: "D-LdsgkAcRs", // Episode 1
       2: "QwvWdmN9aMk", // Episode 2
+      3: "wC4sLG-FS4Y", // Episode 3
+      4: "D2t4GbDmw9w", // Episode 4
+      5: "4Ey2tkrkp1g"  // Episode 5
+    },
+    3: { // Season 3
+      1: "-o3PDM3hR_g", // Episode 1
+      2: "Oi3jy4gneCw", // Episode 2
+      3: "MvlRH-xGmk0", // Episode 3
+      4: "VKw0PsRG8kw", // Episode 4
+      5: "qwFhQJdDViI"  // Episode 5
     }
   },
   
@@ -104,10 +132,19 @@ const animeVideoMapping: Record<string, Record<number, Record<number, string>>> 
       2: "KNfhJGBFFPY", // Episode 2
       3: "3fh4wFJJIzE", // Episode 3
       4: "YhdGqHX3BgU", // Episode 4
+      5: "yrXMk5SN1RY", // Episode 5
+      6: "2Y8Qq7Zf_rM", // Episode 6
+      7: "uv8eTcMG1Rk", // Episode 7
+      8: "o0x-iBM3-ZU", // Episode 8
+      9: "E3jRoZUVFBw", // Episode 9
+      10: "wO2H9AjjAcM" // Episode 10
     },
     2: { // Season 2
       1: "yR9K4FmUlYE", // Episode 1
       2: "iFLt4Rva7-k", // Episode 2
+      3: "4vkQOwS9IPM", // Episode 3
+      4: "W_4YFBGh_xM", // Episode 4
+      5: "bLwQ_IbL_tU"  // Episode 5
     }
   },
   
@@ -117,6 +154,20 @@ const animeVideoMapping: Record<string, Record<number, Record<number, string>>> 
       1: "QczGoCmX-pI", // Episode 1
       2: "elAPV_SgKAE", // Episode 2
       3: "s5VYm-iysYM", // Episode 3
+      4: "3XNk_WxTPp0", // Episode 4
+      5: "KTAXj6WQUbQ", // Episode 5
+      6: "QiWbXDjzr_c", // Episode 6
+      7: "Rh_YCTfuCys", // Episode 7
+      8: "XlL61QoGcJc", // Episode 8
+      9: "xPt9H2bWUYQ", // Episode 9
+      10: "Vc_mCa2UQnY" // Episode 10
+    },
+    2: { // Season 2
+      1: "vNRrd5zDGI0", // Episode 1
+      2: "r9dkn8dosT0", // Episode 2
+      3: "VYh7XefWWm0", // Episode 3
+      4: "NlJZ-YgAt-c", // Episode 4
+      5: "dKwdcB7Lkhw"  // Episode 5
     }
   },
   
@@ -126,10 +177,20 @@ const animeVideoMapping: Record<string, Record<number, Record<number, string>>> 
       1: "XwjhQyI_Pz4", // Episode 1
       2: "c8vSG_-B-8Y", // Episode 2
       3: "bkyV9JpSuDU", // Episode 3
+      4: "aELK2LHSjoo", // Episode 4
+      5: "YmPtfGbMAqk", // Episode 5
+      6: "AXVoHJGgPJk", // Episode 6
+      7: "F8qCxD5AfqE", // Episode 7
+      8: "fXzVLDiCyfo", // Episode 8
+      9: "qZVJESY8oG8", // Episode 9
+      10: "SjkVvGgQFwY" // Episode 10
     },
     2: { // Season 2
       1: "WSUkpEJ7Q1U", // Episode 1
       2: "6LZRlU2V4Ao", // Episode 2
+      3: "GotVc6v0xfE", // Episode 3
+      4: "zfXzNxRY9wI", // Episode 4
+      5: "hkH7jBxV0co"  // Episode 5
     }
   },
   
@@ -137,11 +198,22 @@ const animeVideoMapping: Record<string, Record<number, Record<number, string>>> 
   "60625": {
     1: { // Season 1
       1: "D5fYOnwYkj4", // Episode 1
-      2: "9ZIgCK7mDq4", // Episode 2 
+      2: "9ZIgCK7mDq4", // Episode 2
+      3: "xjBTNOBeNI4", // Episode 3
+      4: "bS8JAPcGBxw", // Episode 4
+      5: "XHakl2bMQYI", // Episode 5
+      6: "AgKFr3dAZs4", // Episode 6
+      7: "2tVSmTArC7s", // Episode 7
+      8: "qBqBR2uyBRY", // Episode 8
+      9: "KXBQ-m0Z2AI", // Episode 9
+      10: "h3gjiNI1td0" // Episode 10
     },
     2: { // Season 2
       1: "uxdS8TP5FPo", // Episode 1
       2: "7NFwhd9qvwU", // Episode 2
+      3: "mYiTmHx7QlI", // Episode 3
+      4: "FQxLQ3V8GJQ", // Episode 4
+      5: "XZgZNyyR9tM"  // Episode 5
     }
   },
   
@@ -150,6 +222,14 @@ const animeVideoMapping: Record<string, Record<number, Record<number, string>>> 
     1: { // Season 1
       1: "XrdbZT5lPzA", // Episode 1
       2: "Jx3JLrQAQvM", // Episode 2
+      3: "5TRzCmvqSPY", // Episode 3
+      4: "ttukXxE3WrY", // Episode 4
+      5: "kPkgaS98NpM", // Episode 5
+      6: "sDakbiONCcs", // Episode 6
+      7: "b6h85B9WZgQ", // Episode 7
+      8: "Cmv8jnkEA7U", // Episode 8
+      9: "_T-6nZckw6I", // Episode 9
+      10: "9D-zKiiK1J0" // Episode 10
     }
   },
   
@@ -158,6 +238,14 @@ const animeVideoMapping: Record<string, Record<number, Record<number, string>>> 
     1: { // Season 1
       1: "ETHpeMUB5UE", // Episode 1
       2: "KwZ_QbXoDxM", // Episode 2
+      3: "KKFoxOPHnCE", // Episode 3
+      4: "uCQx9jpz8cA", // Episode 4
+      5: "VKMw7WjwI4o", // Episode 5
+      6: "X_LXsF2_9N0", // Episode 6
+      7: "uiMXwK6SQtI", // Episode 7
+      8: "Qsv-7Bvtq78", // Episode 8
+      9: "MeEsEQCtyIA", // Episode 9
+      10: "pOIhY_2pW0A" // Episode 10
     }
   },
   
@@ -166,6 +254,14 @@ const animeVideoMapping: Record<string, Record<number, Record<number, string>>> 
     1: { // Season 1
       1: "NlJZ-YgAt-c", // Episode 1
       2: "Vd8tg2njMfI", // Episode 2
+      3: "mtPcVJ2KK-A", // Episode 3
+      4: "eRIxgAIZH7M", // Episode 4
+      5: "1D_9L_Zyumk", // Episode 5
+      6: "C0YKmTQBTNo", // Episode 6
+      7: "ZlUaHLANzSc", // Episode 7
+      8: "QnYLwFcfDGw", // Episode 8
+      9: "E0c8HTBc7qY", // Episode 9
+      10: "SaRnyDIG5H8" // Episode 10
     }
   },
   
@@ -174,6 +270,62 @@ const animeVideoMapping: Record<string, Record<number, Record<number, string>>> 
     1: { // Season 1
       1: "kQw9bPTvCRE", // Episode 1
       2: "eKCLd5j6fLQ", // Episode 2
+      3: "qig4KOK2R2g", // Episode 3
+      4: "xVF9D8JecAI", // Episode 4
+      5: "tFEhJ1HsAvo", // Episode 5
+      6: "kZ428K3PUFg", // Episode 6
+      7: "bG5dlgvv0BE", // Episode 7
+      8: "nTUURslE9BQ", // Episode 8
+      9: "Z5QG8_BU55c", // Episode 9
+      10: "N5jrg9Oc_RQ" // Episode 10
+    }
+  },
+  
+  // Solo Leveling (ID: 203555)
+  "203555": {
+    1: { // Season 1
+      1: "SlNpRThS9t8", // Episode 1
+      2: "ZefrVAetxlI", // Episode 2
+      3: "LYTlC5VrQgw", // Episode 3
+      4: "DsU3dGRjOWo", // Episode 4
+      5: "LJHv1rl_H5g", // Episode 5
+      6: "Y_d8HD-R9pw", // Episode 6
+      7: "xyZKjcK8xUk", // Episode 7
+      8: "xVvzTKQyN-8", // Episode 8
+      9: "fQNUHSmBPR0", // Episode 9
+      10: "vWSXcwQZRl0" // Episode 10
+    }
+  },
+  
+  // Spy x Family (ID: 120089)
+  "120089": {
+    1: { // Season 1
+      1: "ofXigq9aIpo", // Episode 1
+      2: "RVfMhH55Aus", // Episode 2
+      3: "WIKW1B0J9Lk", // Episode 3
+      4: "K68YOzxCd-Q", // Episode 4
+      5: "ULFwHJ-5S50", // Episode 5
+      6: "VZ4b7BLkHQc", // Episode 6
+      7: "3l1hv6TOepM", // Episode 7
+      8: "QQQchL27AFo", // Episode 8
+      9: "gxWLfRdkRdw", // Episode 9
+      10: "aKXq75mzDMQ" // Episode 10
+    }
+  },
+  
+  // Chainsaw Man (ID: 114410)
+  "114410": {
+    1: { // Season 1
+      1: "dFlDRhvM4L0", // Episode 1
+      2: "OTcJEIbGI_0", // Episode 2
+      3: "QZXhx0rxgKs", // Episode 3
+      4: "oDLBJ3Z8qJQ", // Episode 4
+      5: "Ap13QmQCjsY", // Episode 5
+      6: "iUXhT0VsHoQ", // Episode 6
+      7: "bAOBJgH0Yjw", // Episode 7
+      8: "kLVzSF2R7T8", // Episode 8
+      9: "WYQgFvGxHGQ", // Episode 9
+      10: "bCCg8XC6A9w" // Episode 10
     }
   }
 };

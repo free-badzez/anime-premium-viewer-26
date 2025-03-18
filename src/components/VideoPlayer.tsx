@@ -15,11 +15,12 @@ const VideoPlayer = ({ videoId, isOpen, onClose }: VideoPlayerProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md">
       <div className="relative w-full max-w-5xl aspect-video">
         <button
           onClick={onClose}
           className="absolute -top-12 right-0 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+          aria-label="Close video"
         >
           <X size={24} className="text-white" />
         </button>
@@ -31,16 +32,16 @@ const VideoPlayer = ({ videoId, isOpen, onClose }: VideoPlayerProps) => {
         )}
         
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1`}
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&color=white`}
           width="100%"
           height="100%"
           frameBorder="0"
-          allow="autoplay; fullscreen"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
           title="YouTube Video Player"
           className={cn(
-            "bg-black",
-            isLoading ? "opacity-0" : "opacity-100"
+            "bg-black rounded-lg shadow-2xl",
+            isLoading ? "opacity-0" : "opacity-100 transition-opacity duration-500"
           )}
           onLoad={() => setIsLoading(false)}
         ></iframe>
