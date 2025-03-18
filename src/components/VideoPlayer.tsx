@@ -7,12 +7,18 @@ interface VideoPlayerProps {
   videoId: string;
   isOpen: boolean;
   onClose: () => void;
+  isDriveLink?: boolean;
 }
 
-const VideoPlayer = ({ videoId, isOpen, onClose }: VideoPlayerProps) => {
+const VideoPlayer = ({ videoId, isOpen, onClose, isDriveLink = false }: VideoPlayerProps) => {
   const [isLoading, setIsLoading] = useState(true);
 
   if (!isOpen) return null;
+
+  // Generate the appropriate video source URL
+  const videoSrc = isDriveLink 
+    ? `https://drive.google.com/file/d/${videoId}/preview` 
+    : `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&color=white`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md">
@@ -32,13 +38,13 @@ const VideoPlayer = ({ videoId, isOpen, onClose }: VideoPlayerProps) => {
         )}
         
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&color=white`}
+          src={videoSrc}
           width="100%"
           height="100%"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
-          title="YouTube Video Player"
+          title={isDriveLink ? "Google Drive Video Player" : "YouTube Video Player"}
           className={cn(
             "bg-black rounded-lg shadow-2xl",
             isLoading ? "opacity-0" : "opacity-100 transition-opacity duration-500"

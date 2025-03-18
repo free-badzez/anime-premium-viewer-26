@@ -9,6 +9,7 @@ interface VideoPlayerProps {
   isMuted: boolean;
   showEpisodeList: boolean;
   onToggleEpisodeList: () => void;
+  isDriveLink?: boolean;
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ 
@@ -16,8 +17,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   isLoading, 
   isMuted, 
   showEpisodeList,
-  onToggleEpisodeList 
+  onToggleEpisodeList,
+  isDriveLink = false
 }) => {
+  // Generate the appropriate video source URL
+  const videoSrc = videoId ? (
+    isDriveLink 
+      ? `https://drive.google.com/file/d/${videoId}/preview` 
+      : `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&showinfo=0&modestbranding=1&controls=1&disablekb=1&fs=1&iv_load_policy=3&loop=0&origin=${window.location.origin}&enablejsapi=1&widgetid=1&cc_load_policy=0&hl=en-US&cc_lang_pref=en-US&playsinline=1&annotations=0&color=white&hl=en&playlist=${videoId}&nologo=1`
+  ) : '';
+
   return (
     <div className="relative w-full bg-black" style={{ height: "65vh" }}>
       {isLoading ? (
@@ -27,13 +36,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       ) : (
         <div className="h-full w-full">
           <iframe 
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&showinfo=0&modestbranding=1&controls=1&disablekb=1&fs=1&iv_load_policy=3&loop=0&origin=${window.location.origin}&enablejsapi=1&widgetid=1&cc_load_policy=0&hl=en-US&cc_lang_pref=en-US&playsinline=1&annotations=0&color=white&hl=en&playlist=${videoId}&nologo=1`} 
+            src={videoSrc}
             width="100%" 
             height="100%" 
             frameBorder="0" 
             allow="autoplay; fullscreen" 
             allowFullScreen 
-            title="Anime Video Player" 
+            title={isDriveLink ? "Google Drive Video Player" : "Anime Video Player"}
             style={{
               position: 'absolute',
               top: 0,

@@ -52,12 +52,16 @@ const WatchPage = () => {
   const totalEpisodes = getEpisodeCountForSeason(currentSeason);
   
   // Use the hook to get the video ID
-  const { data: videoId, isLoading: isLoadingVideo } = useAnimeVideo(
+  const { data: videoData, isLoading: isLoadingVideo } = useAnimeVideo(
     animeId,
     anime?.name || anime?.title || '',
     currentSeason,
     currentEpisode
   );
+  
+  // Destructure video ID and source type (drive or youtube)
+  const videoId = videoData?.id;
+  const isDriveLink = videoData?.isDrive || false;
   
   const isLoading = isLoadingAnime || isLoadingVideo || !videoId;
   const title = anime?.name || anime?.title || 'Loading...';
@@ -116,6 +120,7 @@ const WatchPage = () => {
               isMuted={isMuted}
               showEpisodeList={showEpisodeList}
               onToggleEpisodeList={toggleEpisodeList}
+              isDriveLink={isDriveLink}
             />
             
             <EpisodeDetails
