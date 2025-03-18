@@ -60,17 +60,17 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
   }, [currentSeason]);
 
   return (
-    <div className="w-80 bg-gray-900 border-r border-gray-800 flex flex-col">
-      <div className="p-4 bg-neutral-950">
+    <div className="w-80 bg-gradient-to-b from-zinc-900 to-zinc-950 border-r border-zinc-800 flex flex-col">
+      <div className="p-4">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-bold">List of episodes:</h3>
-          <Button variant="ghost" size="sm" className="text-white" onClick={onClose}>
+          <h3 className="font-bold text-purple-300">Episodes</h3>
+          <Button variant="ghost" size="sm" className="text-white hover:bg-zinc-800/50" onClick={onClose}>
             <ChevronLeft size={16} />
           </Button>
         </div>
         
         <div className="mb-6">
-          <h4 className="text-sm text-gray-400 mb-2">Season:</h4>
+          <h4 className="text-sm text-purple-200 mb-2">Season:</h4>
           <div className="flex flex-wrap gap-2">
             {seasons.map(season => (
               <Button 
@@ -81,13 +81,13 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
                 className={cn(
                   "relative group overflow-hidden", 
                   currentSeason === season 
-                    ? "bg-gradient-to-br from-yellow-500 to-amber-600 text-black hover:from-yellow-400 hover:to-amber-500 shadow-md shadow-yellow-500/20" 
-                    : "bg-gray-800/70 backdrop-blur-sm hover:bg-gray-700 border border-gray-700/50 transition-all duration-300"
+                    ? "bg-gradient-to-br from-purple-500 to-indigo-600 text-white hover:from-purple-400 hover:to-indigo-500 shadow-md shadow-purple-500/20" 
+                    : "bg-zinc-800/70 backdrop-blur-sm hover:bg-zinc-700 border border-zinc-700/50 transition-all duration-300"
                 )}
               >
                 <span className="relative z-10">{season}</span>
-                {currentSeason === season && <div className="absolute inset-0 bg-yellow-400/20 animate-pulse"></div>}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-yellow-500/20 to-transparent transition-opacity duration-300"></div>
+                {currentSeason === season && <div className="absolute inset-0 bg-white/10 animate-pulse"></div>}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-purple-500/20 to-transparent transition-opacity duration-300"></div>
               </Button>
             ))}
           </div>
@@ -95,18 +95,18 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
         
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
-            <List size={16} />
-            <span>EPS: 001-{totalEpisodes}</span>
+            <List size={16} className="text-purple-400" />
+            <span className="text-zinc-300">EPS: 001-{totalEpisodes}</span>
           </div>
           
           <div className="relative">
-            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-purple-400" />
             <input 
               type="text" 
               placeholder="Episode #" 
               value={searchEpisode} 
               onChange={e => setSearchEpisode(e.target.value)} 
-              className="pl-8 py-1 text-sm bg-gray-800 rounded w-28 focus:outline-none focus:ring-1 focus:ring-yellow-500" 
+              className="pl-8 py-1 text-sm bg-zinc-800/80 rounded-md w-28 focus:outline-none focus:ring-1 focus:ring-purple-500 border border-zinc-700/50" 
             />
           </div>
         </div>
@@ -120,14 +120,14 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
               className={cn(
                 "h-10 w-full relative group overflow-hidden", 
                 currentEpisode === episode 
-                  ? "bg-gradient-to-br from-yellow-500 to-amber-600 text-black hover:from-yellow-400 hover:to-amber-500 shadow-md shadow-yellow-500/20" 
-                  : "bg-gray-800/70 backdrop-blur-sm hover:bg-gray-700 border border-gray-700/50 transition-all duration-300"
+                  ? "bg-gradient-to-br from-purple-500 to-indigo-600 text-white hover:from-purple-400 hover:to-indigo-500 shadow-md shadow-purple-500/20" 
+                  : "bg-zinc-800/70 backdrop-blur-sm hover:bg-zinc-700 border border-zinc-700/50 transition-all duration-300"
               )} 
               onClick={() => onEpisodeClick(episode)}
             >
               <span className="relative z-10">{episode}</span>
-              {currentEpisode === episode && <div className="absolute inset-0 bg-yellow-400/20 animate-pulse"></div>}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-yellow-500/20 to-transparent transition-opacity duration-300"></div>
+              {currentEpisode === episode && <div className="absolute inset-0 bg-white/10 animate-pulse"></div>}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-purple-500/20 to-transparent transition-opacity duration-300"></div>
             </Button>
           ))}
         </div>
@@ -138,7 +138,10 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
               <PaginationItem>
                 <PaginationPrevious 
                   onClick={() => handlePageChange(Math.max(1, currentEpisodePage - 1))}
-                  className={currentEpisodePage === 1 ? "pointer-events-none opacity-50" : ""}
+                  className={cn(
+                    currentEpisodePage === 1 ? "pointer-events-none opacity-50" : "",
+                    "hover:bg-zinc-800 border border-zinc-700/50"
+                  )}
                 />
               </PaginationItem>
               
@@ -159,7 +162,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
                     <PaginationLink 
                       onClick={() => handlePageChange(pageToShow)}
                       isActive={currentEpisodePage === pageToShow}
-                      className={currentEpisodePage === pageToShow ? "bg-gradient-to-br from-yellow-500 to-amber-600 text-black" : ""}
+                      className={currentEpisodePage === pageToShow ? "bg-gradient-to-br from-purple-500 to-indigo-600 text-white" : "hover:bg-zinc-800 border border-zinc-700/50"}
                     >
                       {pageToShow}
                     </PaginationLink>
@@ -170,7 +173,10 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
               <PaginationItem>
                 <PaginationNext 
                   onClick={() => handlePageChange(Math.min(totalPages, currentEpisodePage + 1))}
-                  className={currentEpisodePage === totalPages ? "pointer-events-none opacity-50" : ""}
+                  className={cn(
+                    currentEpisodePage === totalPages ? "pointer-events-none opacity-50" : "",
+                    "hover:bg-zinc-800 border border-zinc-700/50"
+                  )}
                 />
               </PaginationItem>
             </PaginationContent>

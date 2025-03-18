@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight, Star, Heart, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getImageUrl } from '@/lib/api';
 import { AnimeDetail } from '@/types/anime';
@@ -25,33 +25,33 @@ const AnimeInfo: React.FC<AnimeInfoProps> = ({
   onNextEpisode
 }) => {
   return (
-    <div className="flex-1 p-6 bg-zinc-900 overflow-y-auto">
+    <div className="flex-1 p-6 bg-gradient-to-b from-zinc-900 to-zinc-950 overflow-y-auto">
       <div className="flex flex-col md:flex-row gap-6">
         <div className="w-40 h-56 flex-shrink-0">
           {anime?.poster_path ? (
             <img 
               src={getImageUrl(anime.poster_path, 'w300')} 
               alt={title} 
-              className="w-full h-full object-cover rounded-lg shadow-lg" 
+              className="w-full h-full object-cover rounded-lg shadow-lg border border-purple-500/20 hover:shadow-purple-500/20 hover:shadow-md transition-all duration-300" 
             />
           ) : (
-            <div className="w-full h-full bg-gray-800 rounded-lg flex items-center justify-center">
-              <span>No Image</span>
+            <div className="w-full h-full bg-zinc-800 rounded-lg flex items-center justify-center border border-zinc-700">
+              <span className="text-zinc-400">No Image</span>
             </div>
           )}
         </div>
         
         <div className="flex-1">
-          <h1 className="text-3xl font-bold mb-3 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">{title}</h1>
+          <h1 className="text-3xl font-bold mb-3 bg-gradient-to-r from-purple-300 to-indigo-300 bg-clip-text text-transparent">{title}</h1>
           
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 mb-4">
-            <div className="px-3 py-1 bg-gray-800/80 rounded text-sm text-center">PG-13</div>
-            <div className="px-3 py-1 bg-gray-800/80 rounded text-sm text-center">HD</div>
-            <div className="px-3 py-1 bg-yellow-600/90 rounded text-sm text-center font-medium">SUB</div>
-            <div className="px-3 py-1 bg-gray-800/80 rounded text-sm text-center">TV</div>
-            <div className="px-3 py-1 bg-gray-800/80 rounded text-sm text-center">24m</div>
-            <div className="flex items-center justify-center px-3 py-1 bg-green-900/70 rounded text-sm">
-              <span className="text-green-400 mr-1">★</span> 
+            <div className="px-3 py-1 bg-zinc-800/80 rounded-md text-sm text-center text-zinc-300 border border-zinc-700/50">PG-13</div>
+            <div className="px-3 py-1 bg-zinc-800/80 rounded-md text-sm text-center text-zinc-300 border border-zinc-700/50">HD</div>
+            <div className="px-3 py-1 bg-purple-600/90 rounded-md text-sm text-center font-medium text-white shadow-sm">SUB</div>
+            <div className="px-3 py-1 bg-zinc-800/80 rounded-md text-sm text-center text-zinc-300 border border-zinc-700/50">TV</div>
+            <div className="px-3 py-1 bg-zinc-800/80 rounded-md text-sm text-center text-zinc-300 border border-zinc-700/50">24m</div>
+            <div className="flex items-center justify-center px-3 py-1 bg-gradient-to-r from-green-600/50 to-green-700/50 rounded-md text-sm text-white shadow-sm">
+              <Star size={14} className="text-yellow-400 mr-1 fill-yellow-400" /> 
               <span>{anime?.vote_average?.toFixed(1) || '0.0'}</span>
             </div>
           </div>
@@ -62,51 +62,58 @@ const AnimeInfo: React.FC<AnimeInfoProps> = ({
           
           <div className="space-y-4">
             <div>
-              <h3 className="font-medium mb-2 text-yellow-400">Language Options:</h3>
+              <h3 className="font-medium mb-2 text-purple-300">Language Options:</h3>
               <div className="flex flex-wrap gap-3">
-                <Button size="sm" variant="outline" className="bg-yellow-500 text-black hover:bg-yellow-600">SUB</Button>
-                <Button size="sm" variant="outline" className="bg-gray-800 hover:bg-gray-700">DUB</Button>
-                <Button size="sm" variant="outline" className="bg-yellow-500 text-black hover:bg-yellow-600">HD</Button>
-                <Button size="sm" variant="outline" className="bg-gray-800 hover:bg-gray-700">SD</Button>
+                <Button size="sm" variant="outline" className="bg-purple-600 text-white hover:bg-purple-700 border-purple-700/70">SUB</Button>
+                <Button size="sm" variant="outline" className="bg-zinc-800 hover:bg-zinc-700 border-zinc-700/50">DUB</Button>
+                <Button size="sm" variant="outline" className="bg-purple-600 text-white hover:bg-purple-700 border-purple-700/70">HD</Button>
+                <Button size="sm" variant="outline" className="bg-zinc-800 hover:bg-zinc-700 border-zinc-700/50">SD</Button>
               </div>
             </div>
             
             <div className="flex items-center gap-3">
-              <Button variant="gradient" className="text-black">
-                Vote Now
+              <Button className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white hover:from-purple-600 hover:to-indigo-700 shadow-md">
+                <Star size={16} className="mr-2" />
+                Rate
               </Button>
               
-              <Button variant="glow">
+              <Button variant="outline" className="bg-zinc-800/50 border-zinc-700 hover:bg-zinc-700 hover:border-purple-500/30">
+                <Heart size={16} className="mr-2 text-purple-400" />
                 Add to List
+              </Button>
+              
+              <Button variant="outline" className="bg-zinc-800/50 border-zinc-700 hover:bg-zinc-700 hover:border-purple-500/30">
+                <Share2 size={16} className="mr-2 text-purple-400" />
+                Share
               </Button>
             </div>
           </div>
         </div>
       </div>
       
-      <div className="flex items-center justify-between mt-6 px-2">
+      <div className="flex items-center justify-between mt-6 px-2 pt-4 border-t border-zinc-800">
         <Button 
           variant="outline" 
           size="sm"
           onClick={onPreviousEpisode}
           disabled={currentEpisode <= 1}
-          className="bg-gray-800/50 border-gray-700"
+          className="bg-zinc-800/50 border-zinc-700 hover:bg-zinc-700 hover:border-purple-500/30 disabled:opacity-50"
         >
-          <ChevronLeft size={16} className="mr-1" />
+          <ChevronLeft size={16} className="mr-1 text-purple-400" />
           Previous
         </Button>
         
-        <span className="text-sm text-gray-400">Episode {currentEpisode} of {totalEpisodes}</span>
+        <span className="text-sm text-zinc-400">Episode {currentEpisode} of {totalEpisodes}</span>
         
         <Button 
           variant="outline"
           size="sm"
           onClick={onNextEpisode}
           disabled={currentEpisode >= totalEpisodes}
-          className="bg-gray-800/50 border-gray-700"
+          className="bg-zinc-800/50 border-zinc-700 hover:bg-zinc-700 hover:border-purple-500/30 disabled:opacity-50"
         >
           Next
-          <ChevronRight size={16} className="ml-1" />
+          <ChevronRight size={16} className="ml-1 text-purple-400" />
         </Button>
       </div>
     </div>

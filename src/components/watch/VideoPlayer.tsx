@@ -28,10 +28,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   ) : '';
 
   return (
-    <div className="relative w-full bg-black" style={{ height: "65vh" }}>
+    <div className="relative w-full bg-black shadow-lg" style={{ height: "65vh" }}>
       {isLoading ? (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+        <div className="absolute inset-0 flex items-center justify-center bg-zinc-900">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500 opacity-75"></div>
         </div>
       ) : (
         <div className="h-full w-full">
@@ -50,13 +50,19 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               width: '100%',
               height: '100%'
             }}
+            className="rounded-sm"
           ></iframe>
         </div>
       )}
       
       {!showEpisodeList && (
-        <Button variant="ghost" size="sm" className="absolute top-4 left-4 bg-black/50 text-white" onClick={onToggleEpisodeList}>
-          <List size={16} className="mr-2" />
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm text-white hover:bg-black/80 transition-all duration-300 border border-purple-500/30"
+          onClick={onToggleEpisodeList}
+        >
+          <List size={16} className="mr-2 text-purple-400" />
           <span>Show Episodes</span>
         </Button>
       )}

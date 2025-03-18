@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useAnimeDetails, useAnimeVideo } from '@/hooks/useAnime';
 
-// Import our new components
+// Import our components
 import NavigationHeader from '@/components/watch/NavigationHeader';
 import EpisodeList from '@/components/watch/EpisodeList';
 import VideoPlayer from '@/components/watch/VideoPlayer';
@@ -95,7 +95,7 @@ const WatchPage = () => {
   const toggleEpisodeList = () => setShowEpisodeList(!showEpisodeList);
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-gradient-to-b from-black to-zinc-900 text-white">
       <div className="flex flex-col h-screen">
         <NavigationHeader animeId={animeId} />
         
