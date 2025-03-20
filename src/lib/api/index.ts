@@ -1,6 +1,6 @@
 
 // Re-export the getImageUrl function from core
-export { getImageUrl } from './core';
+export { getImageUrl, getCustomImageUrl, CUSTOM_ANIME_IMAGES } from './core';
 
 // Re-export functions from each module
 export { getTrendingAnime } from './trending';
