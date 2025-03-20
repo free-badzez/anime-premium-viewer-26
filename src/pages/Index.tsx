@@ -1,8 +1,10 @@
+
 import React from 'react';
 import { usePopularAnime, useTopRatedAnime, useTrendingAnime, useRecentAnime } from '@/hooks/useAnime';
 import HeroSection from '@/components/HeroSection';
 import AnimeGrid from '@/components/AnimeGrid';
 import Navbar from '@/components/Navbar';
+
 const Index = () => {
   const {
     data: trendingData,
@@ -24,7 +26,9 @@ const Index = () => {
     isLoading: recentLoading,
     error: recentError
   } = useRecentAnime();
-  return <div className="min-h-screen pb-10">
+
+  return (
+    <div className="min-h-screen pb-10">
       <Navbar />
       
       {/* Hero Section - Using more trending anime for rotation */}
@@ -33,7 +37,7 @@ const Index = () => {
       </section>
       
       {/* Main Content */}
-      <div className="max-w-7xl px-4 md:px-[13px] py-0 my-0 mx-0">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8">
         {/* Recent Anime */}
         <AnimeGrid title="Recent & Popular Anime" animes={recentData?.results || []} isLoading={recentLoading} error={recentError as Error} />
 
@@ -46,6 +50,8 @@ const Index = () => {
         {/* Top Rated Anime */}
         <AnimeGrid title="Top Rated" animes={topRatedData?.results || []} isLoading={topRatedLoading} error={topRatedError as Error} />
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;

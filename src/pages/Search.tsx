@@ -26,7 +26,7 @@ const Search = () => {
     <div className="min-h-screen pb-16">
       <Navbar />
       
-      <div className="pt-28 max-w-7xl mx-auto px-4 md:px-10">
+      <div className="pt-28 container mx-auto px-4 md:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold mb-2">Search Results</h1>
           <p className="text-gray-500">
