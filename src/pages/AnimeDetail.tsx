@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAnimeDetails } from '@/hooks/useAnime';
 import { getImageUrl } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Play, Star, Calendar, Clock, ArrowLeft, User, ImageIcon, Upload, X } from 'lucide-react';
+import { Play, Star, Calendar, Clock, ArrowLeft, User, ImageIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import Navbar from '@/components/Navbar';
 import { cn } from '@/lib/utils';
-import { useCustomImageStore } from '@/hooks/useCustomImageStore';
-import { toast } from 'sonner';
 
 const AnimeDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,10 +21,6 @@ const AnimeDetail = () => {
   const [backdropLoaded, setBackdropLoaded] = useState(false);
   const [posterLoaded, setPosterLoaded] = useState(false);
   const [posterError, setPosterError] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  const { getCustomImage, setCustomImage, removeCustomImage } = useCustomImageStore();
-  const customImage = getCustomImage(animeId);
   
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -38,31 +32,6 @@ const AnimeDetail = () => {
   
   const handleSeasonClick = (seasonNumber: number) => {
     navigate(`/watch/${animeId}?season=${seasonNumber}&episode=1`);
-  };
-  
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please select an image file');
-      return;
-    }
-    
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const imageUrl = event.target?.result as string;
-      setCustomImage(animeId, imageUrl);
-      setPosterError(false);
-      toast.success('Custom image has been set');
-    };
-    
-    reader.readAsDataURL(file);
-  };
-  
-  const handleRemoveCustomImage = () => {
-    removeCustomImage(animeId);
-    toast.success('Custom image has been removed');
   };
   
   if (isLoading) {
@@ -116,8 +85,9 @@ const AnimeDetail = () => {
   
   const castMembers = anime?.credits?.cast?.slice(0, 10) || [];
   
+  // Fallback to placeholder if poster is missing
   const posterImage = posterError || !anime?.poster_path
-    ? customImage || '/placeholder.svg'
+    ? '/placeholder.svg'
     : getImageUrl(anime.poster_path, 'w500');
   
   return (
@@ -132,6 +102,11 @@ const AnimeDetail = () => {
               alt={title}
               className="w-full h-full object-cover object-top"
               onLoad={() => setBackdropLoaded(true)}
+              onError={(e) => {
+                // Use a gradient background as fallback if backdrop fails
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+              }}
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
@@ -155,36 +130,12 @@ const AnimeDetail = () => {
               onError={() => setPosterError(true)}
             />
             
-            <div className="absolute inset-x-0 bottom-0 p-3 bg-black/80 backdrop-blur-sm flex justify-center space-x-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="text-white border-white/30 hover:bg-white/20"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Upload size={14} className="mr-1" />
-                {customImage ? 'Change' : 'Add Image'}
-              </Button>
-              
-              {customImage && (
-                <Button 
-                  variant="destructive" 
-                  size="sm"
-                  onClick={handleRemoveCustomImage}
-                >
-                  <X size={14} className="mr-1" />
-                  Remove
-                </Button>
-              )}
-              
-              <input
-                type="file"
-                ref={fileInputRef}
-                className="hidden"
-                accept="image/*"
-                onChange={handleImageUpload}
-              />
-            </div>
+            {posterError && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 bg-opacity-80 text-gray-500">
+                <ImageIcon size={32} />
+                <span className="mt-2 text-sm text-center">No poster available</span>
+              </div>
+            )}
           </div>
           
           <div className="animate-fade-in">

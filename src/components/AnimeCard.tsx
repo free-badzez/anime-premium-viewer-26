@@ -5,7 +5,6 @@ import { Anime } from '@/types/anime';
 import { getImageUrl } from '@/lib/api';
 import { Star, ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useCustomImageStore } from '@/hooks/useCustomImageStore';
 
 interface AnimeCardProps {
   anime: Anime;
@@ -15,7 +14,6 @@ interface AnimeCardProps {
 const AnimeCard = ({ anime, priority = false }: AnimeCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const { getCustomImage } = useCustomImageStore();
   
   const formattedRating = anime.vote_average.toFixed(1);
   const title = anime.name || anime.title || '';
@@ -23,10 +21,9 @@ const AnimeCard = ({ anime, priority = false }: AnimeCardProps) => {
   const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : '???';
   const mediaType = anime.media_type || 'tv';
   
-  // Try to get a custom image if one exists
-  const customImage = getCustomImage(anime.id);
+  // Use a fallback image when there's an error or no poster path
   const imageSrc = imageError || !anime.poster_path
-    ? customImage || '/placeholder.svg'
+    ? '/placeholder.svg'
     : getImageUrl(anime.poster_path, 'w500');
   
   return (
@@ -55,7 +52,7 @@ const AnimeCard = ({ anime, priority = false }: AnimeCardProps) => {
           )}
         />
         
-        {imageError && !customImage && (
+        {imageError && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 bg-opacity-80 text-gray-500">
             <ImageIcon size={24} />
             <span className="mt-2 text-xs text-center">No image</span>

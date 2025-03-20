@@ -6,10 +6,13 @@ const ANIME_TYPE_ID = 16; // Animation genre ID in TMDB
 const LANGUAGE = "en-US"; // English language
 const ANIME_KEYWORDS = "anime"; // Keyword for anime search
 
-// Helper function to create image URLs
+// Helper function to create image URLs with better fallback handling
 export const getImageUrl = (path: string | null, size: string = "original") => {
   if (!path) return "/placeholder.svg";
-  return `https://image.tmdb.org/t/p/${size}${path}`;
+  
+  // Make sure path starts with a slash
+  const formattedPath = path.startsWith('/') ? path : `/${path}`;
+  return `https://image.tmdb.org/t/p/${size}${formattedPath}`;
 };
 
 // Generic fetch function with error handling
