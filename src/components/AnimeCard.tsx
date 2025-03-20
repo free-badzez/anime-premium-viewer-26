@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Anime } from '@/types/anime';
 import { getImageUrl } from '@/lib/api';
-import { Star } from 'lucide-react';
+import { Star, ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useCustomImageStore } from '@/hooks/useCustomImageStore';
 
 interface AnimeCardProps {
   anime: Anime;
@@ -13,12 +14,20 @@ interface AnimeCardProps {
 
 const AnimeCard = ({ anime, priority = false }: AnimeCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const { getCustomImage } = useCustomImageStore();
   
   const formattedRating = anime.vote_average.toFixed(1);
   const title = anime.name || anime.title || '';
   const releaseDate = anime.first_air_date || anime.release_date;
   const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : '???';
   const mediaType = anime.media_type || 'tv';
+  
+  // Try to get a custom image if one exists
+  const customImage = getCustomImage(anime.id);
+  const imageSrc = imageError || !anime.poster_path
+    ? customImage || '/placeholder.svg'
+    : getImageUrl(anime.poster_path, 'w500');
   
   return (
     <Link 
@@ -32,15 +41,26 @@ const AnimeCard = ({ anime, priority = false }: AnimeCardProps) => {
         )} />
         
         <img
-          src={getImageUrl(anime.poster_path, 'w500')}
+          src={imageSrc}
           alt={title}
           loading={priority ? "eager" : "lazy"}
           onLoad={() => setImageLoaded(true)}
+          onError={() => {
+            setImageError(true);
+            setImageLoaded(true);
+          }}
           className={cn(
             "absolute inset-0 h-full w-full object-cover transition-opacity duration-500",
             imageLoaded ? "opacity-100" : "opacity-0"
           )}
         />
+        
+        {imageError && !customImage && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 bg-opacity-80 text-gray-500">
+            <ImageIcon size={24} />
+            <span className="mt-2 text-xs text-center">No image</span>
+          </div>
+        )}
         
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           <div className="flex items-center space-x-1">

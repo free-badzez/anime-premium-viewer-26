@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAnimeDetails } from '@/hooks/useAnime';
 import { getImageUrl } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Play, Star, Calendar, Clock, ArrowLeft, User } from 'lucide-react';
+import { Play, Star, Calendar, Clock, ArrowLeft, User, ImageIcon, Upload, X } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import Navbar from '@/components/Navbar';
 import { cn } from '@/lib/utils';
+import { useCustomImageStore } from '@/hooks/useCustomImageStore';
+import { toast } from 'sonner';
 
 const AnimeDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +22,11 @@ const AnimeDetail = () => {
   const { data: anime, isLoading, error } = useAnimeDetails(animeId, mediaType);
   const [backdropLoaded, setBackdropLoaded] = useState(false);
   const [posterLoaded, setPosterLoaded] = useState(false);
+  const [posterError, setPosterError] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const { getCustomImage, setCustomImage, removeCustomImage } = useCustomImageStore();
+  const customImage = getCustomImage(animeId);
   
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -31,6 +38,31 @@ const AnimeDetail = () => {
   
   const handleSeasonClick = (seasonNumber: number) => {
     navigate(`/watch/${animeId}?season=${seasonNumber}&episode=1`);
+  };
+  
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const imageUrl = event.target?.result as string;
+      setCustomImage(animeId, imageUrl);
+      setPosterError(false);
+      toast.success('Custom image has been set');
+    };
+    
+    reader.readAsDataURL(file);
+  };
+  
+  const handleRemoveCustomImage = () => {
+    removeCustomImage(animeId);
+    toast.success('Custom image has been removed');
   };
   
   if (isLoading) {
@@ -72,17 +104,21 @@ const AnimeDetail = () => {
     );
   }
   
-  const title = anime.name || anime.title || '';
-  const originalTitle = anime.original_name || anime.original_title || '';
-  const releaseDate = anime.first_air_date || anime.release_date;
+  const title = anime?.name || anime?.title || '';
+  const originalTitle = anime?.original_name || anime?.original_title || '';
+  const releaseDate = anime?.first_air_date || anime?.release_date;
   const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : '';
-  const duration = anime.number_of_episodes 
+  const duration = anime?.number_of_episodes 
     ? `${anime.number_of_episodes} episodes` 
-    : anime.runtime 
+    : anime?.runtime 
       ? `${anime.runtime} min.` 
       : '';
   
-  const castMembers = anime.credits?.cast?.slice(0, 10) || [];
+  const castMembers = anime?.credits?.cast?.slice(0, 10) || [];
+  
+  const posterImage = posterError || !anime?.poster_path
+    ? customImage || '/placeholder.svg'
+    : getImageUrl(anime.poster_path, 'w500');
   
   return (
     <div className="min-h-screen pb-16">
@@ -110,23 +146,50 @@ const AnimeDetail = () => {
               "absolute inset-0 bg-gray-100",
               !posterLoaded && "animate-pulse"
             )} />
-            {anime.poster_path ? (
-              <img
-                src={getImageUrl(anime.poster_path, 'w500')}
-                alt={title}
-                className="w-full h-full object-cover"
-                onLoad={() => setPosterLoaded(true)}
+            
+            <img
+              src={posterImage}
+              alt={title}
+              className="w-full h-full object-cover"
+              onLoad={() => setPosterLoaded(true)}
+              onError={() => setPosterError(true)}
+            />
+            
+            <div className="absolute inset-x-0 bottom-0 p-3 bg-black/80 backdrop-blur-sm flex justify-center space-x-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-white border-white/30 hover:bg-white/20"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload size={14} className="mr-1" />
+                {customImage ? 'Change' : 'Add Image'}
+              </Button>
+              
+              {customImage && (
+                <Button 
+                  variant="destructive" 
+                  size="sm"
+                  onClick={handleRemoveCustomImage}
+                >
+                  <X size={14} className="mr-1" />
+                  Remove
+                </Button>
+              )}
+              
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handleImageUpload}
               />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
-                No poster
-              </div>
-            )}
+            </div>
           </div>
           
           <div className="animate-fade-in">
             <div className="flex flex-wrap items-center gap-3 mb-3">
-              {anime.genres && anime.genres.slice(0, 3).map((genre) => (
+              {anime?.genres && anime.genres.slice(0, 3).map((genre) => (
                 <div 
                   key={genre.id} 
                   className="px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-medium"
@@ -156,8 +219,8 @@ const AnimeDetail = () => {
               
               <div className="flex items-center">
                 <Star size={16} className="mr-1 text-yellow-400 fill-yellow-400" />
-                <span>{anime.vote_average.toFixed(1)}</span>
-                <span className="text-gray-400 ml-1">({anime.vote_count} votes)</span>
+                <span>{anime?.vote_average.toFixed(1)}</span>
+                <span className="text-gray-400 ml-1">({anime?.vote_count} votes)</span>
               </div>
               
               {duration && (
@@ -171,7 +234,7 @@ const AnimeDetail = () => {
             <div className="mb-8">
               <h3 className="font-medium mb-2">Overview</h3>
               <p className="text-gray-600 leading-relaxed text-balance">
-                {anime.overview || 'No description available.'}
+                {anime?.overview || 'No description available.'}
               </p>
             </div>
             
@@ -213,7 +276,7 @@ const AnimeDetail = () => {
               </div>
             )}
             
-            {anime.seasons && anime.seasons.length > 0 && (
+            {anime?.seasons && anime.seasons.length > 0 && (
               <div className="mb-8">
                 <h3 className="text-xl font-semibold mb-4">Seasons</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -254,11 +317,11 @@ const AnimeDetail = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
                 <div className="flex justify-between py-2 border-b">
                   <span className="text-gray-500">Status</span>
-                  <span className="font-medium">{anime.status}</span>
+                  <span className="font-medium">{anime?.status}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
                   <span className="text-gray-500">Type</span>
-                  <span className="font-medium">{anime.media_type === 'movie' ? 'Movie' : anime.type || 'TV'}</span>
+                  <span className="font-medium">{anime?.media_type === 'movie' ? 'Movie' : anime?.type || 'TV'}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
                   <span className="text-gray-500">Release Date</span>
@@ -266,11 +329,11 @@ const AnimeDetail = () => {
                 </div>
                 <div className="flex justify-between py-2 border-b">
                   <span className="text-gray-500">Original Language</span>
-                  <span className="font-medium capitalize">{anime.original_language === 'ja' ? 'Japanese' : anime.original_language}</span>
+                  <span className="font-medium capitalize">{anime?.original_language === 'ja' ? 'Japanese' : anime?.original_language}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
                   <span className="text-gray-500">Popularity</span>
-                  <span className="font-medium">{anime.popularity.toFixed(0)}</span>
+                  <span className="font-medium">{anime?.popularity.toFixed(0)}</span>
                 </div>
               </div>
             </div>
