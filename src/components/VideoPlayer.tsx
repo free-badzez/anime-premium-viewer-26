@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -12,8 +12,24 @@ interface VideoPlayerProps {
 
 const VideoPlayer = ({ videoId, isOpen, onClose, isDriveLink = false }: VideoPlayerProps) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
 
-  if (!isOpen) return null;
+  // Mount effect
+  useEffect(() => {
+    if (isOpen) {
+      setIsMounted(true);
+      // Start loading indicator
+      setIsLoading(true);
+    } else {
+      // Delayed unmount for smooth exit animation
+      const timer = setTimeout(() => {
+        setIsMounted(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  if (!isMounted) return null;
 
   // Generate the appropriate video source URL
   const videoSrc = isDriveLink 
@@ -21,7 +37,10 @@ const VideoPlayer = ({ videoId, isOpen, onClose, isDriveLink = false }: VideoPla
     : `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&color=white`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md">
+    <div className={cn(
+      "fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md transition-opacity duration-300",
+      isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+    )}>
       <div className="relative w-full max-w-5xl aspect-video">
         <button
           onClick={onClose}
@@ -46,10 +65,12 @@ const VideoPlayer = ({ videoId, isOpen, onClose, isDriveLink = false }: VideoPla
           allowFullScreen
           title={isDriveLink ? "Google Drive Video Player" : "YouTube Video Player"}
           className={cn(
-            "bg-black rounded-lg shadow-2xl",
-            isLoading ? "opacity-0" : "opacity-100 transition-opacity duration-500"
+            "bg-black rounded-lg shadow-2xl transition-opacity duration-500",
+            isLoading ? "opacity-0" : "opacity-100"
           )}
           onLoad={() => setIsLoading(false)}
+          importance="high"
+          loading="eager"
         ></iframe>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Search, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import SearchSuggestions from './SearchSuggestions';
+import { ThemeToggle } from './ThemeToggle';
 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -50,30 +51,38 @@ const Navbar = () => {
   return (
     <header className={cn(
       "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 sm:px-6 md:px-10 py-4 backdrop-blur-lg", 
-      isScrolled ? "bg-white/80 shadow-sm" : "bg-transparent"
+      isScrolled 
+        ? "bg-white/80 dark:bg-gray-900/80 shadow-sm" 
+        : "bg-transparent dark:bg-transparent"
     )}>
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link to="/" className="text-xl sm:text-2xl font-semibold tracking-tight hover-scale">
-          アニメ<span className="text-black/70">Hub</span>
+          アニメ<span className="text-black/70 dark:text-white/70">Hub</span>
         </Link>
 
         <div className="hidden md:flex items-center space-x-8">
           <nav className="flex items-center space-x-6">
             <Link to="/" className={cn(
-              "text-sm font-medium transition-colors hover:text-black", 
-              location.pathname === "/" ? "text-black" : "text-black/60"
+              "text-sm font-medium transition-colors hover:text-black dark:hover:text-white", 
+              location.pathname === "/" 
+                ? "text-black dark:text-white" 
+                : "text-black/60 dark:text-white/60"
             )}>
               Home
             </Link>
             <Link to="/trending" className={cn(
-              "text-sm font-medium transition-colors hover:text-black", 
-              location.pathname === "/trending" ? "text-black" : "text-black/60"
+              "text-sm font-medium transition-colors hover:text-black dark:hover:text-white", 
+              location.pathname === "/trending" 
+                ? "text-black dark:text-white" 
+                : "text-black/60 dark:text-white/60"
             )}>
               Trending
             </Link>
             <Link to="/top-rated" className={cn(
-              "text-sm font-medium transition-colors hover:text-black", 
-              location.pathname === "/top-rated" ? "text-black" : "text-black/60"
+              "text-sm font-medium transition-colors hover:text-black dark:hover:text-white", 
+              location.pathname === "/top-rated" 
+                ? "text-black dark:text-white" 
+                : "text-black/60 dark:text-white/60"
             )}>
               Top Rated
             </Link>
@@ -98,11 +107,11 @@ const Navbar = () => {
                     setShowSuggestions(true);
                   }
                 }}
-                className="w-full py-2 pl-4 pr-10 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-gray-300 text-sm" 
+                className="w-full py-2 pl-4 pr-10 rounded-full border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-black/5 dark:focus:ring-white/5 focus:border-gray-300 dark:focus:border-gray-600 text-sm dark:bg-gray-800 dark:text-white" 
               />
               <button 
                 type="submit" 
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 <Search size={16} />
               </button>
@@ -115,16 +124,21 @@ const Navbar = () => {
               />
             )}
           </div>
+          
+          <ThemeToggle />
         </div>
 
-        <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="md:hidden flex items-center space-x-2">
+          <ThemeToggle />
+          <button className="text-black dark:text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-lg animate-fade-in border-t border-gray-100">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg animate-fade-in border-t border-gray-100 dark:border-gray-800">
           <div className="p-5 space-y-4">
             <div ref={searchRef} className="relative">
               <form onSubmit={handleSearch}>
@@ -145,11 +159,11 @@ const Navbar = () => {
                       setShowSuggestions(true);
                     }
                   }}
-                  className="w-full py-2 pl-4 pr-10 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-gray-300 text-sm" 
+                  className="w-full py-2 pl-4 pr-10 rounded-full border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-black/5 dark:focus:ring-white/5 focus:border-gray-300 dark:focus:border-gray-600 text-sm dark:bg-gray-800 dark:text-white" 
                 />
                 <button 
                   type="submit" 
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                 >
                   <Search size={16} />
                 </button>
@@ -169,19 +183,25 @@ const Navbar = () => {
             <nav className="flex flex-col space-y-3">
               <Link to="/" className={cn(
                 "text-sm font-medium px-3 py-2 rounded-md transition-colors", 
-                location.pathname === "/" ? "bg-gray-100 text-black" : "text-black/60 hover:bg-gray-50 hover:text-black"
+                location.pathname === "/" 
+                  ? "bg-gray-100 dark:bg-gray-800 text-black dark:text-white" 
+                  : "text-black/60 dark:text-white/60 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-black dark:hover:text-white"
               )}>
                 Home
               </Link>
               <Link to="/trending" className={cn(
                 "text-sm font-medium px-3 py-2 rounded-md transition-colors", 
-                location.pathname === "/trending" ? "bg-gray-100 text-black" : "text-black/60 hover:bg-gray-50 hover:text-black"
+                location.pathname === "/trending" 
+                  ? "bg-gray-100 dark:bg-gray-800 text-black dark:text-white" 
+                  : "text-black/60 dark:text-white/60 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-black dark:hover:text-white"
               )}>
                 Trending
               </Link>
               <Link to="/top-rated" className={cn(
                 "text-sm font-medium px-3 py-2 rounded-md transition-colors", 
-                location.pathname === "/top-rated" ? "bg-gray-100 text-black" : "text-black/60 hover:bg-gray-50 hover:text-black"
+                location.pathname === "/top-rated" 
+                  ? "bg-gray-100 dark:bg-gray-800 text-black dark:text-white" 
+                  : "text-black/60 dark:text-white/60 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-black dark:hover:text-white"
               )}>
                 Top Rated
               </Link>
