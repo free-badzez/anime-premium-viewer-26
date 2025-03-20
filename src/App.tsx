@@ -28,6 +28,7 @@ const queryClient = new QueryClient({
 const AppContent = () => {
   const location = useLocation();
   const isAnimeDetailPage = location.pathname.includes("/anime/");
+  const isWatchPage = location.pathname.includes("/watch/");
   
   return (
     <div className="flex flex-col min-h-screen">
@@ -43,7 +44,7 @@ const AppContent = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
-      {!isAnimeDetailPage && <Footer />}
+      {!isAnimeDetailPage && !isWatchPage && <Footer />}
     </div>
   );
 };

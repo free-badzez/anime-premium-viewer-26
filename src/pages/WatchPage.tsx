@@ -9,6 +9,7 @@ import EpisodeList from '@/components/watch/EpisodeList';
 import VideoPlayer from '@/components/watch/VideoPlayer';
 import EpisodeDetails from '@/components/watch/EpisodeDetails';
 import AnimeInfo from '@/components/watch/AnimeInfo';
+import Footer from '@/components/Footer';
 
 const WatchPage = () => {
   const { id } = useParams<{ id: string; }>();
@@ -95,51 +96,53 @@ const WatchPage = () => {
   const toggleEpisodeList = () => setShowEpisodeList(!showEpisodeList);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-zinc-900 text-white">
-      <div className="flex flex-col h-screen">
-        <NavigationHeader animeId={animeId} />
+    <div className="min-h-screen bg-gradient-to-b from-black to-zinc-900 text-white flex flex-col">
+      <NavigationHeader animeId={animeId} />
+      
+      <div className="flex flex-1 overflow-hidden">
+        {showEpisodeList && (
+          <EpisodeList
+            animeId={animeId}
+            seasons={seasons}
+            currentSeason={currentSeason}
+            currentEpisode={currentEpisode}
+            totalEpisodes={totalEpisodes}
+            onSeasonChange={handleSeasonChange}
+            onEpisodeClick={handleEpisodeClick}
+            onClose={toggleEpisodeList}
+          />
+        )}
         
-        <div className="flex flex-1">
-          {showEpisodeList && (
-            <EpisodeList
-              animeId={animeId}
-              seasons={seasons}
-              currentSeason={currentSeason}
-              currentEpisode={currentEpisode}
-              totalEpisodes={totalEpisodes}
-              onSeasonChange={handleSeasonChange}
-              onEpisodeClick={handleEpisodeClick}
-              onClose={toggleEpisodeList}
-            />
-          )}
+        <div className="flex-1 flex flex-col overflow-y-auto">
+          <VideoPlayer
+            videoId={videoId}
+            isLoading={isLoading}
+            isMuted={isMuted}
+            showEpisodeList={showEpisodeList}
+            onToggleEpisodeList={toggleEpisodeList}
+            isDriveLink={isDriveLink}
+          />
           
-          <div className="flex-1 flex flex-col">
-            <VideoPlayer
-              videoId={videoId}
-              isLoading={isLoading}
-              isMuted={isMuted}
-              showEpisodeList={showEpisodeList}
-              onToggleEpisodeList={toggleEpisodeList}
-              isDriveLink={isDriveLink}
-            />
-            
-            <EpisodeDetails
-              title={title}
-              currentSeason={currentSeason}
-              currentEpisode={currentEpisode}
-            />
-            
-            <AnimeInfo
-              anime={anime}
-              title={title}
-              currentSeason={currentSeason}
-              currentEpisode={currentEpisode}
-              totalEpisodes={totalEpisodes}
-              onPreviousEpisode={handlePreviousEpisode}
-              onNextEpisode={handleNextEpisode}
-            />
-          </div>
+          <EpisodeDetails
+            title={title}
+            currentSeason={currentSeason}
+            currentEpisode={currentEpisode}
+          />
+          
+          <AnimeInfo
+            anime={anime}
+            title={title}
+            currentSeason={currentSeason}
+            currentEpisode={currentEpisode}
+            totalEpisodes={totalEpisodes}
+            onPreviousEpisode={handlePreviousEpisode}
+            onNextEpisode={handleNextEpisode}
+          />
         </div>
+      </div>
+      
+      <div className="watch-page-footer w-full mt-8">
+        <Footer />
       </div>
     </div>
   );
