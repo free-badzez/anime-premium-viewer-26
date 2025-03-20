@@ -4,6 +4,7 @@ import { ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight, Star, Heart, Share2 } 
 import { Button } from '@/components/ui/button';
 import { getImageUrl } from '@/lib/api';
 import { AnimeDetail } from '@/types/anime';
+import { useToast } from '@/components/ui/use-toast';
 
 interface AnimeInfoProps {
   anime: AnimeDetail | undefined;
@@ -24,6 +25,37 @@ const AnimeInfo: React.FC<AnimeInfoProps> = ({
   onPreviousEpisode,
   onNextEpisode
 }) => {
+  const { toast } = useToast();
+
+  const handleShare = () => {
+    const currentUrl = window.location.href;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: `${title} - Season ${currentSeason} Episode ${currentEpisode}`,
+        url: currentUrl
+      }).catch(err => {
+        console.error('Error sharing:', err);
+      });
+    } else {
+      navigator.clipboard.writeText(currentUrl).then(() => {
+        toast({
+          title: "Link copied!",
+          description: "The link has been copied to your clipboard.",
+          duration: 3000,
+        });
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        toast({
+          variant: "destructive",
+          title: "Failed to copy link",
+          description: "Please try again.",
+          duration: 3000,
+        });
+      });
+    }
+  };
+
   return (
     <div className="flex-1 p-6 bg-gradient-to-b from-zinc-900 to-zinc-950 overflow-y-auto">
       <div className="flex flex-col md:flex-row gap-6">
@@ -82,7 +114,11 @@ const AnimeInfo: React.FC<AnimeInfoProps> = ({
                 Add to List
               </Button>
               
-              <Button variant="outline" className="bg-zinc-800/50 border-zinc-700 hover:bg-zinc-700 hover:border-purple-500/30">
+              <Button 
+                variant="outline" 
+                className="bg-zinc-800/50 border-zinc-700 hover:bg-zinc-700 hover:border-purple-500/30"
+                onClick={handleShare}
+              >
                 <Share2 size={16} className="mr-2 text-purple-400" />
                 Share
               </Button>
