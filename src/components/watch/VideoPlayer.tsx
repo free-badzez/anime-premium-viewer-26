@@ -72,7 +72,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             }}
             className="rounded-sm"
             onLoad={handleIframeLoad}
-            importance="high" // Hints to browser that this is a high priority resource
             loading="eager" // Explicitly tell browser to load this immediately
           ></iframe>
         </div>
