@@ -19,47 +19,55 @@ const AnimePoster: React.FC<AnimePosterProps> = ({ animeId, posterPath, title })
   
   // Try to find a fallback image from different sources
   useEffect(() => {
-    if (posterError && !customImage) {
+    if ((posterError || !posterPath) && !customImage && !fallbackImage) {
+      console.log(`Fetching fallback image for: ${title}`);
       // Try to fetch a fallback image from an external API
       fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(title)}&limit=1`)
         .then(response => response.json())
         .then(data => {
           if (data.data && data.data.length > 0 && data.data[0].images?.jpg?.image_url) {
+            console.log(`Found fallback image for: ${title}`);
             setFallbackImage(data.data[0].images.jpg.image_url);
+            setPosterError(false); // Reset error state since we found a fallback
           }
         })
         .catch(err => {
           console.error('Error fetching fallback image:', err);
         });
     }
-  }, [posterError, customImage, title]);
+  }, [posterError, posterPath, customImage, title, fallbackImage]);
   
-  const posterImage = customImage || (fallbackImage && posterError) 
-    ? fallbackImage
+  const isCustomOrFallback = customImage || fallbackImage;
+  const posterImage = isCustomOrFallback 
+    ? (customImage || fallbackImage)
     : (posterError || !posterPath
       ? '/placeholder.svg'
       : getImageUrl(posterPath, 'w500'));
 
+  const handleImageError = () => {
+    console.log(`Image error for: ${title} using path: ${posterImage}`);
+    if (!fallbackImage && !customImage) {
+      setPosterError(true);
+    }
+  };
+
   return (
-    <div className="relative aspect-[2/3] w-full max-w-[250px] md:max-w-none mx-auto md:mx-0 rounded-lg overflow-hidden shadow-xl">
-      <div className={cn(
-        "absolute inset-0 bg-gray-100 dark:bg-gray-800",
-        !posterLoaded && "animate-pulse"
-      )} />
+    <div className="relative aspect-[2/3] w-full max-w-[250px] md:max-w-none mx-auto md:mx-0 rounded-lg overflow-hidden shadow-xl bg-gray-100 dark:bg-gray-800">
+      {!posterLoaded && (
+        <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800 animate-pulse flex items-center justify-center">
+          <ImageIcon size={32} className="text-gray-400" />
+        </div>
+      )}
       
       <img
         src={posterImage}
         alt={title}
-        className="w-full h-full object-cover"
+        className={cn(
+          "w-full h-full object-cover",
+          !posterLoaded && "opacity-0"
+        )}
         onLoad={() => setPosterLoaded(true)}
-        onError={() => {
-          if (!fallbackImage && !customImage) {
-            setPosterError(true);
-          } else if (fallbackImage) {
-            // If we're showing the fallback image and it succeeds, mark as loaded
-            setPosterLoaded(true);
-          }
-        }}
+        onError={handleImageError}
       />
       
       {posterError && !customImage && !fallbackImage && (
