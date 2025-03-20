@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
+
+import React, { useEffect } from 'react';
+import { useParams, useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAnimeDetails } from '@/hooks/useAnime';
-import { getImageUrl, getCustomImageUrl } from '@/lib/api';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Play, Star, Calendar, Clock, ArrowLeft, User, ImageIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { cn } from '@/lib/utils';
+import HeroBackdrop from '@/components/anime/HeroBackdrop';
+import AnimePoster from '@/components/anime/AnimePoster';
+import AnimeInfo from '@/components/anime/AnimeInfo';
+import CastSection from '@/components/anime/CastSection';
+import SeasonsSection from '@/components/anime/SeasonsSection';
+import DetailsSection from '@/components/anime/DetailsSection';
 
 const AnimeDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,17 +24,10 @@ const AnimeDetail = () => {
   
   const animeId = parseInt(id || '0');
   const { data: anime, isLoading, error } = useAnimeDetails(animeId, mediaType);
-  const [backdropLoaded, setBackdropLoaded] = useState(false);
-  const [posterLoaded, setPosterLoaded] = useState(false);
-  const [posterError, setPosterError] = useState(false);
   
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
-  
-  const handleWatchClick = () => {
-    navigate(`/watch/${animeId}?season=1&episode=1`);
-  };
   
   const handleSeasonClick = (seasonNumber: number) => {
     navigate(`/watch/${animeId}?season=${seasonNumber}&episode=1`);
@@ -75,222 +73,35 @@ const AnimeDetail = () => {
   }
   
   const title = anime?.name || anime?.title || '';
-  const originalTitle = anime?.original_name || anime?.original_title || '';
-  const releaseDate = anime?.first_air_date || anime?.release_date;
-  const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : '';
-  const duration = anime?.number_of_episodes 
-    ? `${anime.number_of_episodes} episodes` 
-    : anime?.runtime 
-      ? `${anime.runtime} min.` 
-      : '';
-  
   const castMembers = anime?.credits?.cast?.slice(0, 10) || [];
-  
-  const customImage = getCustomImageUrl(animeId);
-  const posterImage = customImage || (posterError || !anime?.poster_path
-    ? '/placeholder.svg'
-    : getImageUrl(anime.poster_path, 'w500'));
   
   return (
     <div className="min-h-screen pb-0">
       <Navbar />
       
-      <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden">
-        <div className="absolute inset-0 bg-gray-100">
-          {anime.backdrop_path && (
-            <img
-              src={getImageUrl(anime.backdrop_path, 'original')}
-              alt={title}
-              className="w-full h-full object-cover object-top"
-              onLoad={() => setBackdropLoaded(true)}
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-              }}
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-        </div>
-      </div>
+      <HeroBackdrop anime={anime} />
       
       <div className="max-w-7xl mx-auto px-4 md:px-10 -mt-20 md:-mt-32 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] lg:grid-cols-[300px_1fr] gap-8">
-          <div className="relative aspect-[2/3] w-full max-w-[250px] md:max-w-none mx-auto md:mx-0 rounded-lg overflow-hidden shadow-xl">
-            <div className={cn(
-              "absolute inset-0 bg-gray-100",
-              !posterLoaded && "animate-pulse"
-            )} />
-            
-            <img
-              src={posterImage}
-              alt={title}
-              className="w-full h-full object-cover"
-              onLoad={() => setPosterLoaded(true)}
-              onError={() => setPosterError(true)}
-            />
-            
-            {posterError && !customImage && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 bg-opacity-80 text-gray-500">
-                <ImageIcon size={32} />
-                <span className="mt-2 text-sm text-center">No poster available</span>
-                <p className="text-xs text-center mt-2 px-2">
-                  Add a custom image by updating CUSTOM_ANIME_IMAGES in src/lib/api/core.ts
-                </p>
-              </div>
-            )}
-          </div>
+          <AnimePoster 
+            animeId={animeId} 
+            posterPath={anime.poster_path} 
+            title={title} 
+          />
           
-          <div className="animate-fade-in">
-            <div className="flex flex-wrap items-center gap-3 mb-3">
-              {anime?.genres && anime.genres.slice(0, 3).map((genre) => (
-                <div 
-                  key={genre.id} 
-                  className="px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-medium"
-                >
-                  {genre.name}
-                </div>
-              ))}
-            </div>
-            
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-balance">
-              {title}
-            </h1>
-            
-            {originalTitle !== title && (
-              <h2 className="text-lg text-gray-500 mb-4">
-                {originalTitle}
-              </h2>
-            )}
-            
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-sm">
-              {releaseYear && (
-                <div className="flex items-center">
-                  <Calendar size={16} className="mr-1 text-gray-400" />
-                  <span>{releaseYear}</span>
-                </div>
-              )}
-              
-              <div className="flex items-center">
-                <Star size={16} className="mr-1 text-yellow-400 fill-yellow-400" />
-                <span>{anime?.vote_average.toFixed(1)}</span>
-                <span className="text-gray-400 ml-1">({anime?.vote_count} votes)</span>
-              </div>
-              
-              {duration && (
-                <div className="flex items-center">
-                  <Clock size={16} className="mr-1 text-gray-400" />
-                  <span>{duration}</span>
-                </div>
-              )}
-            </div>
-            
-            <div className="mb-8">
-              <h3 className="font-medium mb-2">Overview</h3>
-              <p className="text-gray-600 leading-relaxed text-balance">
-                {anime?.overview || 'No description available.'}
-              </p>
-            </div>
-            
-            <div className="flex flex-wrap gap-4 mb-8">
-              <Button size="lg" className="rounded-full px-6" onClick={handleWatchClick}>
-                <Play size={18} className="mr-2" />
-                Watch
-              </Button>
-            </div>
+          <div>
+            <AnimeInfo anime={anime} />
             
             <Separator className="my-8" />
             
-            {castMembers.length > 0 && (
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4">Cast</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {castMembers.map((person) => (
-                    <div key={person.id} className="space-y-2 text-center">
-                      <div className="aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
-                        {person.profile_path ? (
-                          <img
-                            src={getImageUrl(person.profile_path, 'w300')}
-                            alt={person.name}
-                            className="w-full h-full object-cover object-top"
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center bg-gray-200">
-                            <User size={32} className="text-gray-400" />
-                          </div>
-                        )}
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm line-clamp-1">{person.name}</p>
-                        <p className="text-xs text-gray-500 line-clamp-1">{person.character}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <CastSection cast={castMembers} />
             
-            {anime?.seasons && anime.seasons.length > 0 && (
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4">Seasons</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {anime.seasons.map((season) => (
-                    <div 
-                      key={season.id} 
-                      className="rounded-lg border bg-card shadow-sm hover:scale-105 transition-transform cursor-pointer"
-                      onClick={() => handleSeasonClick(season.season_number)}
-                    >
-                      <div className="aspect-video rounded-t-lg overflow-hidden">
-                        <img
-                          src={getImageUrl(season.poster_path, 'w300') || getImageUrl(anime.poster_path, 'w300')}
-                          alt={season.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="p-3">
-                        <h4 className="font-medium text-sm line-clamp-1">{season.name}</h4>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {season.episode_count} episodes
-                        </p>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="mt-2 w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                        >
-                          <Play size={12} className="mr-1" /> Watch
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <SeasonsSection 
+              anime={anime}
+              onSeasonClick={handleSeasonClick}
+            />
             
-            <div className="mb-8">
-              <h3 className="text-xl font-semibold mb-4">Details</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
-                <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Status</span>
-                  <span className="font-medium">{anime?.status}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Type</span>
-                  <span className="font-medium">{anime?.media_type === 'movie' ? 'Movie' : anime?.type || 'TV'}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Release Date</span>
-                  <span className="font-medium">{releaseDate || 'Unknown'}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Original Language</span>
-                  <span className="font-medium capitalize">{anime?.original_language === 'ja' ? 'Japanese' : anime?.original_language}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b">
-                  <span className="text-gray-500">Popularity</span>
-                  <span className="font-medium">{anime?.popularity.toFixed(0)}</span>
-                </div>
-              </div>
-            </div>
+            <DetailsSection anime={anime} />
           </div>
         </div>
       </div>
