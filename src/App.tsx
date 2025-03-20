@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
 import AnimeDetail from "./pages/AnimeDetail";
@@ -24,6 +24,30 @@ const queryClient = new QueryClient({
   },
 });
 
+// Wrapper component to conditionally render the footer
+const AppContent = () => {
+  const location = useLocation();
+  const isAnimeDetailPage = location.pathname.includes("/anime/");
+  
+  return (
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-grow">
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/anime/:id" element={<AnimeDetail />} />
+          <Route path="/watch/:id" element={<WatchPage />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/tv" element={<TV />} />
+          <Route path="/trending" element={<Trending />} />
+          <Route path="/top-rated" element={<TopRated />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+      {!isAnimeDetailPage && <Footer />}
+    </div>
+  );
+};
+
 const App = () => (
   <ThemeProvider defaultTheme="light">
     <QueryClientProvider client={queryClient}>
@@ -31,21 +55,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="flex flex-col min-h-screen">
-            <div className="flex-grow">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/anime/:id" element={<AnimeDetail />} />
-                <Route path="/watch/:id" element={<WatchPage />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/tv" element={<TV />} />
-                <Route path="/trending" element={<Trending />} />
-                <Route path="/top-rated" element={<TopRated />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </div>
-            <Footer />
-          </div>
+          <AppContent />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
