@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Anime } from '@/types/anime';
-import { getImageUrl } from '@/lib/api';
+import { getImageUrl, getCustomImageUrl } from '@/lib/api';
 import { Star, ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -21,10 +21,11 @@ const AnimeCard = ({ anime, priority = false }: AnimeCardProps) => {
   const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : '???';
   const mediaType = anime.media_type || 'tv';
   
-  // Use a fallback image when there's an error or no poster path
-  const imageSrc = imageError || !anime.poster_path
+  // Check for custom image first, then fallback to poster path or placeholder
+  const customImage = getCustomImageUrl(anime.id);
+  const imageSrc = customImage || (imageError || !anime.poster_path
     ? '/placeholder.svg'
-    : getImageUrl(anime.poster_path, 'w500');
+    : getImageUrl(anime.poster_path, 'w500'));
   
   return (
     <Link 
@@ -52,7 +53,7 @@ const AnimeCard = ({ anime, priority = false }: AnimeCardProps) => {
           )}
         />
         
-        {imageError && (
+        {imageError && !customImage && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 bg-opacity-80 text-gray-500">
             <ImageIcon size={24} />
             <span className="mt-2 text-xs text-center">No image</span>

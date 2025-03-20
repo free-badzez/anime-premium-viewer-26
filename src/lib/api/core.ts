@@ -6,6 +6,12 @@ const ANIME_TYPE_ID = 16; // Animation genre ID in TMDB
 const LANGUAGE = "en-US"; // English language
 const ANIME_KEYWORDS = "anime"; // Keyword for anime search
 
+// Custom anime images mapping
+export const CUSTOM_ANIME_IMAGES: Record<string, string> = {
+  // Add anime ID and custom image URL pairs here
+  // "228663": "https://example.com/custom-image.jpg"
+};
+
 // Helper function to create image URLs with better fallback handling
 export const getImageUrl = (path: string | null, size: string = "original") => {
   if (!path) return "/placeholder.svg";
@@ -13,6 +19,12 @@ export const getImageUrl = (path: string | null, size: string = "original") => {
   // Make sure path starts with a slash
   const formattedPath = path.startsWith('/') ? path : `/${path}`;
   return `https://image.tmdb.org/t/p/${size}${formattedPath}`;
+};
+
+// Get custom image for an anime if available
+export const getCustomImageUrl = (animeId: string | number) => {
+  const id = animeId.toString();
+  return CUSTOM_ANIME_IMAGES[id] || null;
 };
 
 // Generic fetch function with error handling

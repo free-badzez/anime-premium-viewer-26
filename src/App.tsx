@@ -13,6 +13,7 @@ import WatchPage from "./pages/WatchPage";
 import TV from "./pages/TV";
 import Trending from "./pages/Trending";
 import TopRated from "./pages/TopRated";
+import Footer from "./components/Footer";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,16 +31,20 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/anime/:id" element={<AnimeDetail />} />
-            <Route path="/watch/:id" element={<WatchPage />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/tv" element={<TV />} />
-            <Route path="/trending" element={<Trending />} />
-            <Route path="/top-rated" element={<TopRated />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <div className="flex flex-col min-h-screen">
+            <div className="flex-grow">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/anime/:id" element={<AnimeDetail />} />
+                <Route path="/watch/:id" element={<WatchPage />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/tv" element={<TV />} />
+                <Route path="/trending" element={<Trending />} />
+                <Route path="/top-rated" element={<TopRated />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+          </div>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

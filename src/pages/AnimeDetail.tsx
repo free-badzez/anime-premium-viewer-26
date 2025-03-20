@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAnimeDetails } from '@/hooks/useAnime';
-import { getImageUrl } from '@/lib/api';
+import { getImageUrl, getCustomImageUrl } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Play, Star, Calendar, Clock, ArrowLeft, User, ImageIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { cn } from '@/lib/utils';
 
 const AnimeDetail = () => {
@@ -85,13 +86,13 @@ const AnimeDetail = () => {
   
   const castMembers = anime?.credits?.cast?.slice(0, 10) || [];
   
-  // Fallback to placeholder if poster is missing
-  const posterImage = posterError || !anime?.poster_path
+  const customImage = getCustomImageUrl(animeId);
+  const posterImage = customImage || (posterError || !anime?.poster_path
     ? '/placeholder.svg'
-    : getImageUrl(anime.poster_path, 'w500');
+    : getImageUrl(anime.poster_path, 'w500'));
   
   return (
-    <div className="min-h-screen pb-16">
+    <div className="min-h-screen pb-0">
       <Navbar />
       
       <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden">
@@ -103,7 +104,6 @@ const AnimeDetail = () => {
               className="w-full h-full object-cover object-top"
               onLoad={() => setBackdropLoaded(true)}
               onError={(e) => {
-                // Use a gradient background as fallback if backdrop fails
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
               }}
@@ -130,10 +130,13 @@ const AnimeDetail = () => {
               onError={() => setPosterError(true)}
             />
             
-            {posterError && (
+            {posterError && !customImage && (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 bg-opacity-80 text-gray-500">
                 <ImageIcon size={32} />
                 <span className="mt-2 text-sm text-center">No poster available</span>
+                <p className="text-xs text-center mt-2 px-2">
+                  Add a custom image by updating CUSTOM_ANIME_IMAGES in src/lib/api/core.ts
+                </p>
               </div>
             )}
           </div>
@@ -291,6 +294,8 @@ const AnimeDetail = () => {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 };
