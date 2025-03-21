@@ -21,10 +21,10 @@ export const getAnimesByGenre = async (
     with_original_language: 'ja', // Filter to Japanese content
   });
   
-  // Combine the results
+  // Combine the results - ensuring media_type is correctly typed
   const combinedResults = [
-    ...tvResponse.results.map(item => ({ ...item, media_type: 'tv' })),
-    ...movieResponse.results.map(item => ({ ...item, media_type: 'movie' }))
+    ...tvResponse.results.map(item => ({ ...item, media_type: 'tv' as const })),
+    ...movieResponse.results.map(item => ({ ...item, media_type: 'movie' as const }))
   ];
   
   // Filter by anime type ID
