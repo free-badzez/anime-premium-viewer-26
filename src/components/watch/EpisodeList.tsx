@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { List, Search, ChevronLeft } from 'lucide-react';
@@ -31,7 +30,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
   const [currentEpisodePage, setCurrentEpisodePage] = useState(1);
   const episodesPerPage = 30;
 
-  const episodes = Array.from({ length: totalEpisodes }, (_, i) => i + 1);
+  const episodes = Array.from({ length: Math.max(1, totalEpisodes) }, (_, i) => i + 1);
   
   const filteredEpisodes = searchEpisode ? 
     episodes.filter(ep => ep.toString().includes(searchEpisode)) : 
@@ -48,15 +47,19 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
   };
 
   useEffect(() => {
+    setCurrentEpisodePage(1);
+  }, [searchEpisode]);
+
+  useEffect(() => {
     if (currentEpisode) {
       const pageIndex = Math.ceil(currentEpisode / episodesPerPage);
       setCurrentEpisodePage(pageIndex || 1);
     }
   }, [currentEpisode, episodesPerPage]);
 
-  // Reset episode page when season changes
   useEffect(() => {
     setCurrentEpisodePage(1);
+    setSearchEpisode('');
   }, [currentSeason]);
 
   return (
@@ -96,91 +99,105 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <List size={16} className="text-purple-400" />
-            <span className="text-zinc-300">EPS: 001-{totalEpisodes}</span>
+            <span className="text-zinc-300">
+              {totalEpisodes > 0 
+                ? `EPS: 001-${totalEpisodes.toString().padStart(3, '0')}` 
+                : 'No episodes available'}
+            </span>
           </div>
           
-          <div className="relative">
-            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-purple-400" />
-            <input 
-              type="text" 
-              placeholder="Episode #" 
-              value={searchEpisode} 
-              onChange={e => setSearchEpisode(e.target.value)} 
-              className="pl-8 py-1 text-sm bg-zinc-800/80 rounded-md w-28 focus:outline-none focus:ring-1 focus:ring-purple-500 border border-zinc-700/50" 
-            />
-          </div>
+          {totalEpisodes > 0 && (
+            <div className="relative">
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-purple-400" />
+              <input 
+                type="text" 
+                placeholder="Episode #" 
+                value={searchEpisode} 
+                onChange={e => setSearchEpisode(e.target.value)} 
+                className="pl-8 py-1 text-sm bg-zinc-800/80 rounded-md w-28 focus:outline-none focus:ring-1 focus:ring-purple-500 border border-zinc-700/50" 
+              />
+            </div>
+          )}
         </div>
         
-        <div className="grid grid-cols-5 gap-2 mb-4">
-          {currentPageEpisodes.map(episode => (
-            <Button 
-              key={episode} 
-              variant={currentEpisode === episode ? "default" : "ghost"} 
-              size="sm" 
-              className={cn(
-                "h-10 w-full relative group overflow-hidden", 
-                currentEpisode === episode 
-                  ? "bg-gradient-to-br from-purple-500 to-indigo-600 text-white hover:from-purple-400 hover:to-indigo-500 shadow-md shadow-purple-500/20" 
-                  : "bg-zinc-800/70 backdrop-blur-sm hover:bg-zinc-700 border border-zinc-700/50 transition-all duration-300"
-              )} 
-              onClick={() => onEpisodeClick(episode)}
-            >
-              <span className="relative z-10">{episode}</span>
-              {currentEpisode === episode && <div className="absolute inset-0 bg-white/10 animate-pulse"></div>}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-purple-500/20 to-transparent transition-opacity duration-300"></div>
-            </Button>
-          ))}
-        </div>
-        
-        {totalPages > 1 && (
-          <Pagination className="mt-3">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious 
-                  onClick={() => handlePageChange(Math.max(1, currentEpisodePage - 1))}
+        {totalEpisodes > 0 ? (
+          <>
+            <div className="grid grid-cols-5 gap-2 mb-4">
+              {currentPageEpisodes.map(episode => (
+                <Button 
+                  key={episode} 
+                  variant={currentEpisode === episode ? "default" : "ghost"} 
+                  size="sm" 
                   className={cn(
-                    currentEpisodePage === 1 ? "pointer-events-none opacity-50" : "",
-                    "hover:bg-zinc-800 border border-zinc-700/50"
-                  )}
-                />
-              </PaginationItem>
-              
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                let pageToShow;
-                if (totalPages <= 5) {
-                  pageToShow = i + 1;
-                } else if (currentEpisodePage <= 3) {
-                  pageToShow = i + 1;
-                } else if (currentEpisodePage >= totalPages - 2) {
-                  pageToShow = totalPages - 4 + i;
-                } else {
-                  pageToShow = currentEpisodePage - 2 + i;
-                }
-                
-                return (
-                  <PaginationItem key={i}>
-                    <PaginationLink 
-                      onClick={() => handlePageChange(pageToShow)}
-                      isActive={currentEpisodePage === pageToShow}
-                      className={currentEpisodePage === pageToShow ? "bg-gradient-to-br from-purple-500 to-indigo-600 text-white" : "hover:bg-zinc-800 border border-zinc-700/50"}
-                    >
-                      {pageToShow}
-                    </PaginationLink>
+                    "h-10 w-full relative group overflow-hidden", 
+                    currentEpisode === episode 
+                      ? "bg-gradient-to-br from-purple-500 to-indigo-600 text-white hover:from-purple-400 hover:to-indigo-500 shadow-md shadow-purple-500/20" 
+                      : "bg-zinc-800/70 backdrop-blur-sm hover:bg-zinc-700 border border-zinc-700/50 transition-all duration-300"
+                  )} 
+                  onClick={() => onEpisodeClick(episode)}
+                >
+                  <span className="relative z-10">{episode}</span>
+                  {currentEpisode === episode && <div className="absolute inset-0 bg-white/10 animate-pulse"></div>}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-purple-500/20 to-transparent transition-opacity duration-300"></div>
+                </Button>
+              ))}
+            </div>
+            
+            {totalPages > 1 && (
+              <Pagination className="mt-3">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => handlePageChange(Math.max(1, currentEpisodePage - 1))}
+                      className={cn(
+                        currentEpisodePage === 1 ? "pointer-events-none opacity-50" : "",
+                        "hover:bg-zinc-800 border border-zinc-700/50"
+                      )}
+                    />
                   </PaginationItem>
-                );
-              })}
-              
-              <PaginationItem>
-                <PaginationNext 
-                  onClick={() => handlePageChange(Math.min(totalPages, currentEpisodePage + 1))}
-                  className={cn(
-                    currentEpisodePage === totalPages ? "pointer-events-none opacity-50" : "",
-                    "hover:bg-zinc-800 border border-zinc-700/50"
-                  )}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+                  
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageToShow;
+                    if (totalPages <= 5) {
+                      pageToShow = i + 1;
+                    } else if (currentEpisodePage <= 3) {
+                      pageToShow = i + 1;
+                    } else if (currentEpisodePage >= totalPages - 2) {
+                      pageToShow = totalPages - 4 + i;
+                    } else {
+                      pageToShow = currentEpisodePage - 2 + i;
+                    }
+                    
+                    return (
+                      <PaginationItem key={i}>
+                        <PaginationLink 
+                          onClick={() => handlePageChange(pageToShow)}
+                          isActive={currentEpisodePage === pageToShow}
+                          className={currentEpisodePage === pageToShow ? "bg-gradient-to-br from-purple-500 to-indigo-600 text-white" : "hover:bg-zinc-800 border border-zinc-700/50"}
+                        >
+                          {pageToShow}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  })}
+                  
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => handlePageChange(Math.min(totalPages, currentEpisodePage + 1))}
+                      className={cn(
+                        currentEpisodePage === totalPages ? "pointer-events-none opacity-50" : "",
+                        "hover:bg-zinc-800 border border-zinc-700/50"
+                      )}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
+          </>
+        ) : (
+          <div className="py-10 text-center">
+            <p className="text-zinc-400">No episodes available for this season</p>
+          </div>
         )}
       </div>
     </div>

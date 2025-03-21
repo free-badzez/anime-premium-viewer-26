@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import {
   getTrendingAnime,
@@ -43,6 +42,12 @@ export const useAnimeDetails = (id: number, mediaType?: string) => {
     queryKey: ['anime-details', id, mediaType],
     queryFn: () => getAnimeDetails(id, mediaType),
     enabled: !!id,
+    retry: (failureCount, error) => {
+      if ((error as Error).message?.includes('404')) {
+        return failureCount < 2;
+      }
+      return failureCount < 3;
+    }
   });
 };
 
@@ -51,6 +56,7 @@ export const useAnimeVideo = (animeId: number, title: string, season: number = 1
     queryKey: ['anime-video', animeId, title, season, episode],
     queryFn: () => getAnimeVideo(animeId, title, season, episode),
     enabled: !!animeId && !!title,
+    staleTime: 1000 * 60 * 5,
   });
 };
 

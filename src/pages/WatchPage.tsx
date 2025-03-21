@@ -21,33 +21,50 @@ const WatchPage = () => {
   const seasonParam = queryParams.get('season');
   
   const animeId = parseInt(id || '0');
-  const [currentEpisode, setCurrentEpisode] = useState(episodeParam ? parseInt(episodeParam) : 1);
-  const [currentSeason, setCurrentSeason] = useState(seasonParam ? parseInt(seasonParam) : 1);
+  const { data: anime, isLoading: isLoadingAnime } = useAnimeDetails(animeId);
+  
+  // Only set initial values after anime data is loaded to avoid invalid season/episode combinations
+  const [currentSeason, setCurrentSeason] = useState(1);
+  const [currentEpisode, setCurrentEpisode] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [showEpisodeList, setShowEpisodeList] = useState(true);
   
-  const { data: anime, isLoading: isLoadingAnime } = useAnimeDetails(animeId);
+  // Set season and episode once anime data is loaded
+  useEffect(() => {
+    if (anime) {
+      // Determine valid season
+      const maxSeasons = anime.seasons?.length || anime.number_of_seasons || 1;
+      const validSeason = seasonParam ? Math.min(parseInt(seasonParam), maxSeasons) : 1;
+      setCurrentSeason(validSeason);
+      
+      // Determine valid episode for the season
+      const episodeCount = getEpisodeCountForSeason(validSeason);
+      const validEpisode = episodeParam ? Math.min(parseInt(episodeParam), episodeCount) : 1;
+      setCurrentEpisode(validEpisode);
+    }
+  }, [anime, seasonParam, episodeParam]);
   
-  // Generate season-specific episode counts
+  // Get the actual episode count for a given season
   const getEpisodeCountForSeason = (seasonNumber: number) => {
-    if (anime?.seasons && anime.seasons.length > 0) {
+    if (!anime) return 1;
+    
+    // Try to get episode count from the seasons data first
+    if (anime.seasons && anime.seasons.length > 0) {
       const season = anime.seasons.find(s => s.season_number === seasonNumber);
-      if (season) {
+      if (season && season.episode_count > 0) {
         return season.episode_count;
       }
     }
     
-    // Fallback episode counts if not found in anime data
-    const fallbackCounts: Record<number, number> = {
-      1: anime?.number_of_episodes || 24,
-      2: 12,
-      3: 24,
-      4: 12,
-      5: 25
-    };
+    // If this is the first season and we don't have specific season data,
+    // use the total episode count
+    if (seasonNumber === 1 && anime.number_of_episodes) {
+      return anime.number_of_episodes;
+    }
     
-    return fallbackCounts[seasonNumber] || 12; // Default to 12 episodes
+    // Default to 1 episode if we can't determine the count
+    return 1;
   };
   
   const totalEpisodes = getEpisodeCountForSeason(currentSeason);
@@ -74,7 +91,8 @@ const WatchPage = () => {
 
   const handleSeasonChange = (season: number) => {
     setCurrentSeason(season);
-    setCurrentEpisode(1); // Reset to first episode when changing season
+    // Always reset to first episode when changing season
+    setCurrentEpisode(1);
     navigate(`/watch/${animeId}?season=${season}&episode=1`);
   };
 
@@ -90,7 +108,8 @@ const WatchPage = () => {
     }
   };
 
-  const totalSeasons = anime?.seasons?.length || anime?.number_of_seasons || Math.floor(1 + Math.random() * 4);
+  // Get the actual number of seasons
+  const totalSeasons = anime?.seasons?.length || anime?.number_of_seasons || 1;
   const seasons = Array.from({ length: totalSeasons }, (_, i) => i + 1);
 
   const toggleEpisodeList = () => setShowEpisodeList(!showEpisodeList);
