@@ -1,10 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { List, Search, ChevronLeft, AlertCircle } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import { cn } from '@/lib/utils';
+
+// Import our new components
+import SeasonSelector from './SeasonSelector';
+import EpisodeSearch from './EpisodeSearch';
+import EpisodeGrid from './EpisodeGrid';
+import EpisodePagination from './EpisodePagination';
+import NoEpisodes from './NoEpisodes';
 
 interface EpisodeListProps {
   animeId: number;
@@ -65,7 +69,6 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
   }, [currentSeason]);
 
   const hasNoEpisodes = totalEpisodes <= 0;
-  const noSeasonsAvailable = !seasons || seasons.length === 0;
 
   return (
     <div className="w-80 bg-gradient-to-b from-zinc-900 to-zinc-950 border-r border-zinc-800 flex flex-col">
@@ -77,135 +80,35 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
           </Button>
         </div>
         
-        {!noSeasonsAvailable && (
-          <div className="mb-6">
-            <h4 className="text-sm text-purple-200 mb-2">Season:</h4>
-            <div className="flex flex-wrap gap-2">
-              {seasons.map(season => (
-                <Button 
-                  key={season} 
-                  variant={currentSeason === season ? "default" : "outline"} 
-                  size="sm" 
-                  onClick={() => onSeasonChange(season)} 
-                  className={cn(
-                    "relative group overflow-hidden", 
-                    currentSeason === season 
-                      ? "bg-gradient-to-br from-purple-500 to-indigo-600 text-white hover:from-purple-400 hover:to-indigo-500 shadow-md shadow-purple-500/20" 
-                      : "bg-zinc-800/70 backdrop-blur-sm hover:bg-zinc-700 border border-zinc-700/50 transition-all duration-300"
-                  )}
-                >
-                  <span className="relative z-10">{season}</span>
-                  {currentSeason === season && <div className="absolute inset-0 bg-white/10 animate-pulse"></div>}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-purple-500/20 to-transparent transition-opacity duration-300"></div>
-                </Button>
-              ))}
-            </div>
-          </div>
-        )}
+        <SeasonSelector 
+          seasons={seasons} 
+          currentSeason={currentSeason} 
+          onSeasonChange={onSeasonChange} 
+        />
         
         {!hasNoEpisodes && (
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <List size={16} className="text-purple-400" />
-              <span className="text-zinc-300">
-                {totalEpisodes > 0 
-                  ? `EPS: 001-${totalEpisodes.toString().padStart(3, '0')}` 
-                  : 'No episodes available'}
-              </span>
-            </div>
-            
-            <div className="relative">
-              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-purple-400" />
-              <input 
-                type="text" 
-                placeholder="Episode #" 
-                value={searchEpisode} 
-                onChange={e => setSearchEpisode(e.target.value)} 
-                className="pl-8 py-1 text-sm bg-zinc-800/80 rounded-md w-28 focus:outline-none focus:ring-1 focus:ring-purple-500 border border-zinc-700/50" 
-              />
-            </div>
-          </div>
+          <EpisodeSearch 
+            totalEpisodes={totalEpisodes} 
+            searchEpisode={searchEpisode} 
+            onSearchChange={setSearchEpisode} 
+          />
         )}
         
         {hasNoEpisodes ? (
-          <div className="py-10 text-center">
-            <AlertCircle className="w-12 h-12 text-purple-400 mx-auto mb-3 opacity-70" />
-            <p className="text-zinc-400 font-medium">No episodes available for this season</p>
-            <p className="text-zinc-500 text-sm mt-2">Try selecting a different season or anime</p>
-          </div>
+          <NoEpisodes />
         ) : (
           <>
-            <div className="grid grid-cols-5 gap-2 mb-4">
-              {currentPageEpisodes.map(episode => (
-                <Button 
-                  key={episode} 
-                  variant={currentEpisode === episode ? "default" : "ghost"} 
-                  size="sm" 
-                  className={cn(
-                    "h-10 w-full relative group overflow-hidden", 
-                    currentEpisode === episode 
-                      ? "bg-gradient-to-br from-purple-500 to-indigo-600 text-white hover:from-purple-400 hover:to-indigo-500 shadow-md shadow-purple-500/20" 
-                      : "bg-zinc-800/70 backdrop-blur-sm hover:bg-zinc-700 border border-zinc-700/50 transition-all duration-300"
-                  )} 
-                  onClick={() => onEpisodeClick(episode)}
-                >
-                  <span className="relative z-10">{episode}</span>
-                  {currentEpisode === episode && <div className="absolute inset-0 bg-white/10 animate-pulse"></div>}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-purple-500/20 to-transparent transition-opacity duration-300"></div>
-                </Button>
-              ))}
-            </div>
+            <EpisodeGrid 
+              currentPageEpisodes={currentPageEpisodes} 
+              currentEpisode={currentEpisode} 
+              onEpisodeClick={onEpisodeClick} 
+            />
             
-            {totalPages > 1 && (
-              <Pagination className="mt-3">
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious 
-                      onClick={() => handlePageChange(Math.max(1, currentEpisodePage - 1))}
-                      className={cn(
-                        currentEpisodePage === 1 ? "pointer-events-none opacity-50" : "",
-                        "hover:bg-zinc-800 border border-zinc-700/50"
-                      )}
-                    />
-                  </PaginationItem>
-                  
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageToShow;
-                    if (totalPages <= 5) {
-                      pageToShow = i + 1;
-                    } else if (currentEpisodePage <= 3) {
-                      pageToShow = i + 1;
-                    } else if (currentEpisodePage >= totalPages - 2) {
-                      pageToShow = totalPages - 4 + i;
-                    } else {
-                      pageToShow = currentEpisodePage - 2 + i;
-                    }
-                    
-                    return (
-                      <PaginationItem key={i}>
-                        <PaginationLink 
-                          onClick={() => handlePageChange(pageToShow)}
-                          isActive={currentEpisodePage === pageToShow}
-                          className={currentEpisodePage === pageToShow ? "bg-gradient-to-br from-purple-500 to-indigo-600 text-white" : "hover:bg-zinc-800 border border-zinc-700/50"}
-                        >
-                          {pageToShow}
-                        </PaginationLink>
-                      </PaginationItem>
-                    );
-                  })}
-                  
-                  <PaginationItem>
-                    <PaginationNext 
-                      onClick={() => handlePageChange(Math.min(totalPages, currentEpisodePage + 1))}
-                      className={cn(
-                        currentEpisodePage === totalPages ? "pointer-events-none opacity-50" : "",
-                        "hover:bg-zinc-800 border border-zinc-700/50"
-                      )}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            )}
+            <EpisodePagination 
+              currentEpisodePage={currentEpisodePage} 
+              totalPages={totalPages} 
+              onPageChange={handlePageChange} 
+            />
           </>
         )}
       </div>
