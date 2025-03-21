@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import {
   getTrendingAnime,
@@ -42,6 +43,7 @@ export const useAnimeDetails = (id: number, mediaType?: string) => {
     queryKey: ['anime-details', id, mediaType],
     queryFn: () => getAnimeDetails(id, mediaType),
     enabled: !!id,
+    staleTime: 1000 * 60 * 10, // Cache for 10 minutes
     retry: (failureCount, error) => {
       if ((error as Error).message?.includes('404')) {
         return failureCount < 2;

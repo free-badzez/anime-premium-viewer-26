@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { List, Search, ChevronLeft } from 'lucide-react';
+import { List, Search, ChevronLeft, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { cn } from '@/lib/utils';
@@ -30,6 +31,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
   const [currentEpisodePage, setCurrentEpisodePage] = useState(1);
   const episodesPerPage = 30;
 
+  // Create array of available episodes (handle 0 totalEpisodes case gracefully)
   const episodes = Array.from({ length: Math.max(1, totalEpisodes) }, (_, i) => i + 1);
   
   const filteredEpisodes = searchEpisode ? 
@@ -62,6 +64,9 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
     setSearchEpisode('');
   }, [currentSeason]);
 
+  const hasNoEpisodes = totalEpisodes <= 0;
+  const noSeasonsAvailable = !seasons || seasons.length === 0;
+
   return (
     <div className="w-80 bg-gradient-to-b from-zinc-900 to-zinc-950 border-r border-zinc-800 flex flex-col">
       <div className="p-4">
@@ -72,41 +77,43 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
           </Button>
         </div>
         
-        <div className="mb-6">
-          <h4 className="text-sm text-purple-200 mb-2">Season:</h4>
-          <div className="flex flex-wrap gap-2">
-            {seasons.map(season => (
-              <Button 
-                key={season} 
-                variant={currentSeason === season ? "default" : "outline"} 
-                size="sm" 
-                onClick={() => onSeasonChange(season)} 
-                className={cn(
-                  "relative group overflow-hidden", 
-                  currentSeason === season 
-                    ? "bg-gradient-to-br from-purple-500 to-indigo-600 text-white hover:from-purple-400 hover:to-indigo-500 shadow-md shadow-purple-500/20" 
-                    : "bg-zinc-800/70 backdrop-blur-sm hover:bg-zinc-700 border border-zinc-700/50 transition-all duration-300"
-                )}
-              >
-                <span className="relative z-10">{season}</span>
-                {currentSeason === season && <div className="absolute inset-0 bg-white/10 animate-pulse"></div>}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-purple-500/20 to-transparent transition-opacity duration-300"></div>
-              </Button>
-            ))}
+        {!noSeasonsAvailable && (
+          <div className="mb-6">
+            <h4 className="text-sm text-purple-200 mb-2">Season:</h4>
+            <div className="flex flex-wrap gap-2">
+              {seasons.map(season => (
+                <Button 
+                  key={season} 
+                  variant={currentSeason === season ? "default" : "outline"} 
+                  size="sm" 
+                  onClick={() => onSeasonChange(season)} 
+                  className={cn(
+                    "relative group overflow-hidden", 
+                    currentSeason === season 
+                      ? "bg-gradient-to-br from-purple-500 to-indigo-600 text-white hover:from-purple-400 hover:to-indigo-500 shadow-md shadow-purple-500/20" 
+                      : "bg-zinc-800/70 backdrop-blur-sm hover:bg-zinc-700 border border-zinc-700/50 transition-all duration-300"
+                  )}
+                >
+                  <span className="relative z-10">{season}</span>
+                  {currentSeason === season && <div className="absolute inset-0 bg-white/10 animate-pulse"></div>}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-purple-500/20 to-transparent transition-opacity duration-300"></div>
+                </Button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
         
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
-            <List size={16} className="text-purple-400" />
-            <span className="text-zinc-300">
-              {totalEpisodes > 0 
-                ? `EPS: 001-${totalEpisodes.toString().padStart(3, '0')}` 
-                : 'No episodes available'}
-            </span>
-          </div>
-          
-          {totalEpisodes > 0 && (
+        {!hasNoEpisodes && (
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-2">
+              <List size={16} className="text-purple-400" />
+              <span className="text-zinc-300">
+                {totalEpisodes > 0 
+                  ? `EPS: 001-${totalEpisodes.toString().padStart(3, '0')}` 
+                  : 'No episodes available'}
+              </span>
+            </div>
+            
             <div className="relative">
               <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-purple-400" />
               <input 
@@ -117,10 +124,16 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
                 className="pl-8 py-1 text-sm bg-zinc-800/80 rounded-md w-28 focus:outline-none focus:ring-1 focus:ring-purple-500 border border-zinc-700/50" 
               />
             </div>
-          )}
-        </div>
+          </div>
+        )}
         
-        {totalEpisodes > 0 ? (
+        {hasNoEpisodes ? (
+          <div className="py-10 text-center">
+            <AlertCircle className="w-12 h-12 text-purple-400 mx-auto mb-3 opacity-70" />
+            <p className="text-zinc-400 font-medium">No episodes available for this season</p>
+            <p className="text-zinc-500 text-sm mt-2">Try selecting a different season or anime</p>
+          </div>
+        ) : (
           <>
             <div className="grid grid-cols-5 gap-2 mb-4">
               {currentPageEpisodes.map(episode => (
@@ -194,10 +207,6 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
               </Pagination>
             )}
           </>
-        ) : (
-          <div className="py-10 text-center">
-            <p className="text-zinc-400">No episodes available for this season</p>
-          </div>
         )}
       </div>
     </div>

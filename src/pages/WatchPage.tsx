@@ -10,22 +10,24 @@ import VideoPlayer from '@/components/watch/VideoPlayer';
 import EpisodeDetails from '@/components/watch/EpisodeDetails';
 import AnimeInfo from '@/components/watch/AnimeInfo';
 import Footer from '@/components/Footer';
+import { useToast } from '@/components/ui/use-toast';
 
 const WatchPage = () => {
   const { id } = useParams<{ id: string; }>();
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
   
   const queryParams = new URLSearchParams(location.search);
   const episodeParam = queryParams.get('episode');
   const seasonParam = queryParams.get('season');
   
   const animeId = parseInt(id || '0');
-  const { data: anime, isLoading: isLoadingAnime } = useAnimeDetails(animeId);
+  const { data: anime, isLoading: isLoadingAnime, error } = useAnimeDetails(animeId);
   
   // Only set initial values after anime data is loaded to avoid invalid season/episode combinations
-  const [currentSeason, setCurrentSeason] = useState(1);
-  const [currentEpisode, setCurrentEpisode] = useState(1);
+  const [currentSeason, setCurrentSeason] = useState<number | null>(null);
+  const [currentEpisode, setCurrentEpisode] = useState<number | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [showEpisodeList, setShowEpisodeList] = useState(true);
@@ -33,17 +35,98 @@ const WatchPage = () => {
   // Set season and episode once anime data is loaded
   useEffect(() => {
     if (anime) {
-      // Determine valid season
-      const maxSeasons = anime.seasons?.length || anime.number_of_seasons || 1;
-      const validSeason = seasonParam ? Math.min(parseInt(seasonParam), maxSeasons) : 1;
-      setCurrentSeason(validSeason);
+      // Determine total seasons available
+      const availableSeasons = getAvailableSeasons();
       
-      // Determine valid episode for the season
-      const episodeCount = getEpisodeCountForSeason(validSeason);
-      const validEpisode = episodeParam ? Math.min(parseInt(episodeParam), episodeCount) : 1;
-      setCurrentEpisode(validEpisode);
+      if (availableSeasons.length === 0) {
+        // If no seasons data, default to 1 season
+        setCurrentSeason(1);
+        
+        // Use the total episodes if available, otherwise default to 1
+        const episodeCount = anime.number_of_episodes || 1;
+        const requestedEpisode = episodeParam ? parseInt(episodeParam) : 1;
+        
+        // Make sure the requested episode is valid
+        const validEpisode = Math.min(Math.max(1, requestedEpisode), episodeCount);
+        setCurrentEpisode(validEpisode);
+        
+        // If the URL had an invalid episode, update it
+        if (requestedEpisode !== validEpisode) {
+          updateUrlParams(1, validEpisode);
+          
+          if (requestedEpisode > episodeCount) {
+            toast({
+              title: "Episode not available",
+              description: `This anime only has ${episodeCount} episode${episodeCount !== 1 ? 's' : ''}.`,
+              variant: "destructive"
+            });
+          }
+        }
+      } else {
+        // We have seasons data
+        const requestedSeason = seasonParam ? parseInt(seasonParam) : 1;
+        
+        // Validate the season number
+        const validSeason = availableSeasons.includes(requestedSeason) 
+          ? requestedSeason 
+          : availableSeasons[0];
+        
+        setCurrentSeason(validSeason);
+        
+        // Now get the episode count for this season
+        const episodeCount = getEpisodeCountForSeason(validSeason);
+        const requestedEpisode = episodeParam ? parseInt(episodeParam) : 1;
+        
+        // Make sure the requested episode is valid for this season
+        const validEpisode = Math.min(Math.max(1, requestedEpisode), episodeCount);
+        setCurrentEpisode(validEpisode);
+        
+        // If URL had invalid season/episode, update it
+        if (requestedSeason !== validSeason || requestedEpisode !== validEpisode) {
+          updateUrlParams(validSeason, validEpisode);
+          
+          if (requestedSeason !== validSeason) {
+            toast({
+              title: "Season not available",
+              description: `This anime doesn't have Season ${requestedSeason}.`,
+              variant: "destructive"
+            });
+          } else if (requestedEpisode > episodeCount) {
+            toast({
+              title: "Episode not available",
+              description: `Season ${validSeason} only has ${episodeCount} episode${episodeCount !== 1 ? 's' : ''}.`,
+              variant: "destructive"
+            });
+          }
+        }
+      }
     }
   }, [anime, seasonParam, episodeParam]);
+  
+  // Get available seasons from the anime data
+  const getAvailableSeasons = () => {
+    if (!anime) return [];
+    
+    if (anime.seasons && anime.seasons.length > 0) {
+      // Some anime with weird season names (like "Specials") should be filtered out
+      return anime.seasons
+        .filter(s => 
+          s.episode_count > 0 && 
+          !s.name.toLowerCase().includes('special') &&
+          !s.name.toLowerCase().includes('extra')
+        )
+        .map(s => s.season_number)
+        .sort((a, b) => a - b);
+    }
+    
+    // If we have number_of_seasons but no seasons array
+    if (anime.number_of_seasons && anime.number_of_seasons > 0) {
+      return Array.from({ length: anime.number_of_seasons }, (_, i) => i + 1);
+    }
+    
+    // If we can't determine, default to season 1
+    return [1];
+  };
   
   // Get the actual episode count for a given season
   const getEpisodeCountForSeason = (seasonNumber: number) => {
@@ -67,52 +150,75 @@ const WatchPage = () => {
     return 1;
   };
   
-  const totalEpisodes = getEpisodeCountForSeason(currentSeason);
+  const updateUrlParams = (season: number, episode: number) => {
+    navigate(`/watch/${animeId}?season=${season}&episode=${episode}`, { replace: true });
+  };
   
-  // Use the hook to get the video ID
+  // Get total episodes for the current season
+  const totalEpisodes = currentSeason ? getEpisodeCountForSeason(currentSeason) : 0;
+  
+  // Get available seasons
+  const availableSeasons = getAvailableSeasons();
+  
+  // Use the hook to get the video ID only when we have valid season and episode
   const { data: videoData, isLoading: isLoadingVideo } = useAnimeVideo(
     animeId,
     anime?.name || anime?.title || '',
-    currentSeason,
-    currentEpisode
+    currentSeason || 1,
+    currentEpisode || 1
   );
   
   // Destructure video ID and source type (drive or youtube)
   const videoId = videoData?.id;
   const isDriveLink = videoData?.isDrive || false;
   
-  const isLoading = isLoadingAnime || isLoadingVideo || !videoId;
+  const isLoading = isLoadingAnime || isLoadingVideo || !videoId || currentSeason === null || currentEpisode === null;
   const title = anime?.name || anime?.title || 'Loading...';
   
   const handleEpisodeClick = (episode: number) => {
+    if (currentSeason === null) return;
     setCurrentEpisode(episode);
-    navigate(`/watch/${animeId}?season=${currentSeason}&episode=${episode}`);
+    updateUrlParams(currentSeason, episode);
   };
 
   const handleSeasonChange = (season: number) => {
     setCurrentSeason(season);
     // Always reset to first episode when changing season
     setCurrentEpisode(1);
-    navigate(`/watch/${animeId}?season=${season}&episode=1`);
+    updateUrlParams(season, 1);
   };
 
   const handlePreviousEpisode = () => {
+    if (currentEpisode === null || currentSeason === null) return;
     if (currentEpisode > 1) {
       handleEpisodeClick(currentEpisode - 1);
     }
   };
 
   const handleNextEpisode = () => {
+    if (currentEpisode === null || currentSeason === null) return;
     if (currentEpisode < totalEpisodes) {
       handleEpisodeClick(currentEpisode + 1);
     }
   };
 
-  // Get the actual number of seasons
-  const totalSeasons = anime?.seasons?.length || anime?.number_of_seasons || 1;
-  const seasons = Array.from({ length: totalSeasons }, (_, i) => i + 1);
-
   const toggleEpisodeList = () => setShowEpisodeList(!showEpisodeList);
+
+  // If there's an error loading the anime
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-black to-zinc-900 text-white flex flex-col items-center justify-center p-4">
+        <h1 className="text-2xl font-bold text-red-400 mb-4">Error Loading Anime</h1>
+        <p className="text-zinc-300 mb-6">Unable to load this anime. It may not exist or there might be a temporary issue.</p>
+        <button 
+          onClick={() => navigate('/')}
+          className="px-4 py-2 bg-purple-600 rounded-md hover:bg-purple-700 transition-colors"
+        >
+          Return to Home
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black to-zinc-900 text-white flex flex-col">
@@ -122,9 +228,9 @@ const WatchPage = () => {
         {showEpisodeList && (
           <EpisodeList
             animeId={animeId}
-            seasons={seasons}
-            currentSeason={currentSeason}
-            currentEpisode={currentEpisode}
+            seasons={availableSeasons}
+            currentSeason={currentSeason || 1}
+            currentEpisode={currentEpisode || 1}
             totalEpisodes={totalEpisodes}
             onSeasonChange={handleSeasonChange}
             onEpisodeClick={handleEpisodeClick}
@@ -144,15 +250,15 @@ const WatchPage = () => {
           
           <EpisodeDetails
             title={title}
-            currentSeason={currentSeason}
-            currentEpisode={currentEpisode}
+            currentSeason={currentSeason || 1}
+            currentEpisode={currentEpisode || 1}
           />
           
           <AnimeInfo
             anime={anime}
             title={title}
-            currentSeason={currentSeason}
-            currentEpisode={currentEpisode}
+            currentSeason={currentSeason || 1}
+            currentEpisode={currentEpisode || 1}
             totalEpisodes={totalEpisodes}
             onPreviousEpisode={handlePreviousEpisode}
             onNextEpisode={handleNextEpisode}

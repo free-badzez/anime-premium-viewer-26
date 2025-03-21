@@ -61,6 +61,22 @@ interface VideoSource {
   isDrive: boolean;
 }
 
+// Mapping of anime IDs to their correct season and episode counts
+// This helps override incorrect data from the API
+const animeCorrections: Record<string, { seasons: number, episodesPerSeason: Record<number, number> }> = {
+  // Solo Leveling (ID: 127532) - Has 1 season with 13 episodes
+  "127532": {
+    seasons: 1,
+    episodesPerSeason: { 1: 13 }
+  },
+  // Rascal Does Not Dream of a Dreaming Girl (ID depends on exact mapping)
+  "93290": {
+    seasons: 1,
+    episodesPerSeason: { 1: 13 }
+  },
+  // Add more anime corrections as needed
+};
+
 // Comprehensive video mapping for different animes, seasons, and episodes
 const animeVideoMapping: Record<string, Record<number, Record<number, VideoSource>>> = {
   // Attack on Titan (ID: 1429)
@@ -83,6 +99,25 @@ const animeVideoMapping: Record<string, Record<number, Record<number, VideoSourc
       3: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 3 (Drive)
       4: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 4 (Drive)
       5: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }  // Episode 5 (Drive)
+    }
+  },
+  
+  // Solo Leveling (ID: 127532) - Properly mapped to 1 season with 13 episodes
+  "127532": {
+    1: { // Season 1
+      1: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 1 (Drive)
+      2: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 2 (Drive)
+      3: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 3 (Drive)
+      4: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 4 (Drive)
+      5: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 5 (Drive)
+      6: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 6 (Drive) 
+      7: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 7 (Drive)
+      8: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 8 (Drive)
+      9: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 9 (Drive)
+      10: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 10 (Drive)
+      11: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 11 (Drive)
+      12: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }, // Episode 12 (Drive)
+      13: { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }  // Episode 13 (Drive)
     }
   },
   
@@ -152,6 +187,44 @@ const defaultVideos: VideoSource[] = [
   { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true },
   { id: "1n31X7MsTkLTaUFw7i_VamwI6j5qVnxet", isDrive: true }
 ];
+
+// Enhanced function to get details for an anime with correct season/episode info
+export const getAnimeDetailsCorrected = async (id: number, mediaType?: string) => {
+  const details = await getAnimeDetails(id, mediaType);
+  const animeIdString = id.toString();
+  
+  // Apply corrections if we have them for this anime
+  if (animeCorrections[animeIdString]) {
+    const correction = animeCorrections[animeIdString];
+    
+    // Override seasons data if needed
+    if (correction.seasons && correction.seasons > 0) {
+      // Create corrected seasons array
+      details.seasons = Array.from({ length: correction.seasons }, (_, i) => {
+        const seasonNumber = i + 1;
+        return {
+          id: seasonNumber,
+          name: `Season ${seasonNumber}`,
+          overview: "",
+          air_date: details.first_air_date || "",
+          episode_count: correction.episodesPerSeason[seasonNumber] || 1,
+          poster_path: details.poster_path,
+          season_number: seasonNumber
+        };
+      });
+      
+      // Update number_of_seasons
+      details.number_of_seasons = correction.seasons;
+      
+      // If this is a single season anime, also update number_of_episodes
+      if (correction.seasons === 1 && correction.episodesPerSeason[1]) {
+        details.number_of_episodes = correction.episodesPerSeason[1];
+      }
+    }
+  }
+  
+  return details;
+};
 
 // Get YouTube or Google Drive video ID for an anime
 export const getAnimeVideo = async (
