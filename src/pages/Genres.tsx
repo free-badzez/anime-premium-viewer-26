@@ -2,12 +2,12 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getAnimesByGenre } from '@/lib/api/genres';
+import { getAnimesByGenre, getDefaultGenreAnime } from '@/lib/api/genres';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import AnimeGrid from '@/components/AnimeGrid';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Filter, Tag } from 'lucide-react';
+import { Filter, Tag, TrendingUp } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 
 // All letters of the alphabet for filtering
@@ -63,11 +63,23 @@ const Genres = () => {
   };
   
   // Fetch animes based on selected genre and letter
-  const { data, isLoading, error } = useQuery({
+  const { data: filteredData, isLoading: isFilteredLoading, error: filteredError } = useQuery({
     queryKey: ['animes', 'genre', selectedGenre, selectedLetter],
     queryFn: () => getAnimesByGenre(selectedGenre, selectedLetter),
     enabled: !!selectedGenre,
   });
+  
+  // Fetch default anime when no genre is selected
+  const { data: defaultData, isLoading: isDefaultLoading, error: defaultError } = useQuery({
+    queryKey: ['animes', 'genre', 'default'],
+    queryFn: getDefaultGenreAnime,
+    enabled: !selectedGenre,
+  });
+  
+  // Determine which data to display
+  const displayData = selectedGenre ? filteredData : defaultData;
+  const isLoading = selectedGenre ? isFilteredLoading : isDefaultLoading;
+  const error = selectedGenre ? filteredError : defaultError;
   
   return (
     <div className="min-h-screen pt-16 pb-8 bg-background">
@@ -142,23 +154,18 @@ const Genres = () => {
             <h2 className="text-xl font-semibold mb-4">
               {selectedGenre 
                 ? `${GENRES.find(g => g.id.toString() === selectedGenre)?.name || 'Genre'} Anime${selectedLetter ? ` starting with "${selectedLetter}"` : ''}`
-                : 'Select a genre to browse anime'}
+                : <div className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-purple-500" />
+                    <span>Popular Anime Across All Genres</span>
+                  </div>
+              }
             </h2>
             
-            {selectedGenre ? (
-              <AnimeGrid 
-                animes={data?.results || []} 
-                isLoading={isLoading} 
-                error={error as Error} 
-              />
-            ) : (
-              <div className="py-12 text-center">
-                <Tag className="h-12 w-12 mx-auto text-muted-foreground" />
-                <p className="mt-4 text-muted-foreground">
-                  Select a genre from above to browse anime
-                </p>
-              </div>
-            )}
+            <AnimeGrid 
+              animes={displayData?.results || []} 
+              isLoading={isLoading} 
+              error={error as Error} 
+            />
           </div>
         </div>
       </main>
