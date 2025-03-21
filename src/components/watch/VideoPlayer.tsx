@@ -35,7 +35,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   // Generate the appropriate video source URL with optimized parameters
   const videoSrc = videoId ? (
     isDriveLink 
-      ? `https://drive.google.com/file/d/${videoId}/preview` 
+      ? `https://drive.google.com/file/d/${videoId}/preview?usp=sharing&embedded=true&rm=minimal` 
       : `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&showinfo=0&modestbranding=1&controls=1&disablekb=1&fs=1&iv_load_policy=3&loop=0&origin=${window.location.origin}&enablejsapi=1&widgetid=1&cc_load_policy=0&hl=en-US&cc_lang_pref=en-US&playsinline=1&annotations=0&color=white&playlist=${videoId}&nologo=1`
   ) : '';
 

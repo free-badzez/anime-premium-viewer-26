@@ -33,7 +33,7 @@ const VideoPlayer = ({ videoId, isOpen, onClose, isDriveLink = false }: VideoPla
 
   // Generate the appropriate video source URL
   const videoSrc = isDriveLink 
-    ? `https://drive.google.com/file/d/${videoId}/preview` 
+    ? `https://drive.google.com/file/d/${videoId}/preview?usp=sharing&embedded=true&rm=minimal` 
     : `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&color=white`;
 
   return (
