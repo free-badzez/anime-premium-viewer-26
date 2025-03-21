@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, Menu, X } from 'lucide-react';
+import { Search, Menu, X, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import SearchSuggestions from './SearchSuggestions';
 import { ThemeToggle } from './ThemeToggle';
@@ -85,6 +85,15 @@ const Navbar = () => {
                 : "text-black/60 dark:text-white/60"
             )}>
               Top Rated
+            </Link>
+            <Link to="/genres" className={cn(
+              "text-sm font-medium transition-colors hover:text-black dark:hover:text-white flex items-center gap-1", 
+              location.pathname === "/genres" 
+                ? "text-black dark:text-white" 
+                : "text-black/60 dark:text-white/60"
+            )}>
+              <Tag size={16} />
+              Genres
             </Link>
           </nav>
 
@@ -204,6 +213,15 @@ const Navbar = () => {
                   : "text-black/60 dark:text-white/60 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-black dark:hover:text-white"
               )}>
                 Top Rated
+              </Link>
+              <Link to="/genres" className={cn(
+                "text-sm font-medium px-3 py-2 rounded-md transition-colors flex items-center gap-2", 
+                location.pathname === "/genres" 
+                  ? "bg-gray-100 dark:bg-gray-800 text-black dark:text-white" 
+                  : "text-black/60 dark:text-white/60 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-black dark:hover:text-white"
+              )}>
+                <Tag size={16} />
+                Genres
               </Link>
             </nav>
           </div>

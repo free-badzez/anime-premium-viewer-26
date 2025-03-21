@@ -13,6 +13,7 @@ import WatchPage from "./pages/WatchPage";
 import TV from "./pages/TV";
 import Trending from "./pages/Trending";
 import TopRated from "./pages/TopRated";
+import Genres from "./pages/Genres";
 import Footer from "./components/Footer";
 
 const queryClient = new QueryClient({
@@ -41,6 +42,7 @@ const AppContent = () => {
           <Route path="/tv" element={<TV />} />
           <Route path="/trending" element={<Trending />} />
           <Route path="/top-rated" element={<TopRated />} />
+          <Route path="/genres" element={<Genres />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
