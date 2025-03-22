@@ -56,21 +56,29 @@ const VideoPlayer = ({ videoId, isOpen, onClose, isDriveLink = false }: VideoPla
           </div>
         )}
         
-        <iframe
-          src={videoSrc}
-          width="100%"
-          height="100%"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-          title={isDriveLink ? "Google Drive Video Player" : "YouTube Video Player"}
-          className={cn(
-            "bg-black rounded-lg shadow-2xl transition-opacity duration-500",
-            isLoading ? "opacity-0" : "opacity-100"
+        <div className="relative w-full h-full">
+          <iframe
+            src={videoSrc}
+            width="100%"
+            height="100%"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            title={isDriveLink ? "Google Drive Video Player" : "YouTube Video Player"}
+            className={cn(
+              "bg-black rounded-lg shadow-2xl transition-opacity duration-500",
+              isLoading ? "opacity-0" : "opacity-100"
+            )}
+            onLoad={() => setIsLoading(false)}
+            loading="eager"
+            sandbox={isDriveLink ? "allow-scripts allow-same-origin" : ""}
+          ></iframe>
+          
+          {/* CSS overlay to hide the pop-out button on Google Drive embeds */}
+          {isDriveLink && (
+            <div className="absolute top-2 right-2 w-10 h-10 bg-black pointer-events-none"></div>
           )}
-          onLoad={() => setIsLoading(false)}
-          loading="eager"
-        ></iframe>
+        </div>
       </div>
     </div>
   );

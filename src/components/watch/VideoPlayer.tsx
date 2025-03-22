@@ -52,7 +52,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       )}
       
       {loadStarted && videoSrc && (
-        <div className="h-full w-full">
+        <div className="h-full w-full relative">
           <iframe 
             src={videoSrc}
             width="100%" 
@@ -73,7 +73,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             className="rounded-sm"
             onLoad={handleIframeLoad}
             loading="eager" // Explicitly tell browser to load this immediately
+            sandbox={isDriveLink ? "allow-scripts allow-same-origin" : ""}
           ></iframe>
+          
+          {/* CSS overlay to hide the pop-out button on Google Drive embeds */}
+          {isDriveLink && playerLoaded && (
+            <div 
+              className="absolute bg-black pointer-events-none z-10" 
+              style={{ top: '12px', right: '12px', width: '40px', height: '40px' }}
+            ></div>
+          )}
         </div>
       )}
       
