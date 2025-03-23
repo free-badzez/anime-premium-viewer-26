@@ -47,13 +47,19 @@ const WatchPage = () => {
   // Destructure video ID and source type (drive or youtube)
   const videoId = videoData?.id;
   const isDriveLink = videoData?.isDrive || false;
+  const videoAvailable = !!videoData;
   
-  const isLoading = isLoadingAnime || isLoadingVideo || !videoId || currentSeason === null || currentEpisode === null;
+  const isLoading = isLoadingAnime || isLoadingVideo || currentSeason === null || currentEpisode === null;
   const title = anime?.name || anime?.title || 'Loading...';
   
   // If there's an error loading the anime
   if (error) {
     return <ErrorState />;
+  }
+
+  // If there's no video available after loading
+  if (!isLoading && !videoAvailable) {
+    return <ErrorState message="No video is available for this anime." />;
   }
 
   return (
