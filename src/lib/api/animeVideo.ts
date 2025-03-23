@@ -16,15 +16,9 @@ const animeVideoMapping: Record<string, Record<number, Record<number, VideoSourc
   
   // Add other specific anime videos here as needed
   // For example:
-  "127532": { // Solo Levelling 
+  "85937": { // Demon Slayer 
     1: { 
-      1: { id: "19axSY041thDY-n8qlMcAJW2QyPibDPom", isDrive: true }, 
-      2: { id: "1XbadhoCCYxauTiRgSZBNhsaE-RNEWyVz", isDrive: true },
-      3: { id: "1ZeKhtnBxny1H-acXBD7IyEr12Y00ne2N", isDrive: true }, 
-      4: { id: "1Q-De8Z-JMioTz9ohFKXNC1pwEvJryKzz", isDrive: true },
-      5: { id: "18t7Ml6DEgvurYfKr00miZVVfOF71eEnS", isDrive: true },
-      6: { id: "12KumMskfLZubsKiuRFneXaC6UQuggWyD", isDrive: true },
-      7: { id: "13X7WqV-kfalKrEYtu53PBXyIqY7ZxLF", isDrive: true }
+      1: { id: "your-demon-slayer-video-id", isDrive: true }
     }
   }
 };
