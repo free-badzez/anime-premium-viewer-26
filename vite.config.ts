@@ -5,14 +5,17 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: "/", // Ensure correct base path for Netlify
   server: {
     host: "::",
     port: 8080,
   },
+  build: {
+    outDir: "dist", // Ensure Vite outputs to the correct folder
+  },
   plugins: [
     react(),
-    mode === 'development' &&
-    componentTagger(),
+    mode === "development" && componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
