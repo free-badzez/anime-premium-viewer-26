@@ -43,18 +43,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setPlayerLoaded(true);
   };
 
-  // If no video ID is available, show a message
-  if (!videoId) {
-    return (
-      <div className="relative w-full bg-black shadow-lg dark:shadow-gray-900/50 flex items-center justify-center" style={{ height: "65vh" }}>
-        <div className="text-center p-8">
-          <h3 className="text-xl font-semibold text-gray-300 mb-2">Video Not Available</h3>
-          <p className="text-gray-400">This anime doesn't have a video available at the moment.</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="relative w-full bg-black shadow-lg dark:shadow-gray-900/50" style={{ height: "65vh" }}>
       {(isLoading || !playerLoaded) && (
